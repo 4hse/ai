@@ -5,14 +5,23 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\ChatHistory;
 use common\ai\workflows\RouterWorkflow;
 use Exception;
+use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
 
-    public function stream(string $thread_id, array $messages)
+    public function stream(Request $request)
     {
-        $message = $messages[0];
+        $thread_id = $request->input('thread_id');
+        $messages = $request->input('messages', []);
+        $message = $messages[0] ?? null;
         $user_id = 'adriano.foschi@4hse.com';
+
+        if (!$thread_id || !$message) {
+            return response()->json([
+                'error' => 'thread_id and messages are required'
+            ], 400);
+        }
 
         $chatHistory = ChatHistory::firstOrCreate(
             ['thread_id' => $thread_id],
