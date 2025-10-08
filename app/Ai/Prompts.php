@@ -1,6 +1,6 @@
 <?php
 
-namespace common\ai;
+namespace App\Ai;
 
 class Prompts
 {

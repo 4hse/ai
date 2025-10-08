@@ -1,11 +1,12 @@
 <?php
 
-namespace common\ai;
+namespace App\Ai;
 
 use Exception;
 use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
 use NeuronAI\RAG\Embeddings\GeminiEmbeddingsProvider;
 use Illuminate\Support\Facades\Config;
+
 class EmbeddingsProviders
 {
 

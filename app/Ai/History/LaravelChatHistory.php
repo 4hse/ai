@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-namespace common\ai\History;
+namespace App\Ai\History;
 
 use App\Models\ChatHistory;
 use NeuronAI\Chat\History\AbstractChatHistory;

@@ -1,15 +1,15 @@
 <?php
 
-namespace common\ai\agents;
+namespace App\Ai\agents;
 
 
 use NeuronAI\MCP\McpConnector;
-use common\ai\Prompts;
+use App\Ai\Prompts;
 use Exception;
 use NeuronAI\Agent;
 use NeuronAI\SystemPrompt;
 use NeuronAI\Providers\AIProviderInterface;
-use common\ai\Providers;
+use App\Ai\Providers;
 
 /**
  * The Assistant agent is designed to execute 4hse tools

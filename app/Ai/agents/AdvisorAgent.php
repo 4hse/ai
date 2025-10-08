@@ -1,6 +1,6 @@
 <?php
 
-namespace common\ai\agents;
+namespace App\Ai\agents;
 
 use Exception;
 use NeuronAI\Exceptions\VectorStoreException;
@@ -9,8 +9,8 @@ use NeuronAI\RAG\Embeddings\EmbeddingsProviderInterface;
 use NeuronAI\RAG\RAG;
 use NeuronAI\RAG\VectorStore\FileVectorStore;
 use NeuronAI\RAG\VectorStore\VectorStoreInterface;
-use common\ai\Providers;
-use common\ai\EmbeddingsProviders;
+use App\Ai\Providers;
+use App\Ai\EmbeddingsProviders;
 
 /**
  * The Advisor agent is designed to provide commercial support for 4hse

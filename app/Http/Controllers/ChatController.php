@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\ChatHistory;
-use common\ai\workflows\RouterWorkflow;
+use App\Ai\workflows\RouterWorkflow;
 use Exception;
 use Illuminate\Http\Request;
+use App\Ai\events\GenerationProgressEvent;
+
 
 class ChatController extends Controller
 {
@@ -14,7 +16,7 @@ class ChatController extends Controller
     {
         $thread_id = $request->input('thread_id');
         $messages = $request->input('messages', []);
-        $message = $messages[0] ?? null;
+        $message = 'cosa è 4hse?';
         $user_id = 'adriano.foschi@4hse.com';
 
         if (!$thread_id || !$message) {
@@ -23,20 +25,21 @@ class ChatController extends Controller
             ], 400);
         }
 
-        $chatHistory = ChatHistory::firstOrCreate(
+
+        /*$chatHistory = ChatHistory::firstOrCreate(
             ['thread_id' => $thread_id],
             [
                 'user_id' => $user_id,
                 'messages' => []
             ]
-        );
+        );*/
 
         // Set the appropriate headers for SSE
-        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id, $chatHistory) {
+        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id) {
             try {
-                if (!$chatHistory) {
+                /*if (!$chatHistory) {
                     throw new Exception("Unable to retreive/create thread");
-                }
+                }*/
 
                 while (true) {
                     $workflow = new RouterWorkflow($message, $thread_id, $user_id);
@@ -51,7 +54,7 @@ class ChatController extends Controller
                         }
                     }
                 }
-    
+
             }  catch (Exception $e) {
                 $this->sendMessage($thread_id, "service", "error");
             }

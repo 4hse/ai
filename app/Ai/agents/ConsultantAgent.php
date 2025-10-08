@@ -1,13 +1,13 @@
 <?php
 
-namespace common\ai\agents;
+namespace App\Ai\agents;
 
-use common\ai\Prompts;
+use App\Ai\Prompts;
 use Exception;
 use NeuronAI\Agent;
 use NeuronAI\SystemPrompt;
 use NeuronAI\Providers\AIProviderInterface;
-use common\ai\Providers;
+use App\Ai\Providers;
 
 /**
  * The Consultant agent is designed to provide expert advice on workplace safety

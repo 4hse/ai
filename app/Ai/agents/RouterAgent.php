@@ -1,13 +1,13 @@
 <?php
 
-namespace common\ai\agents;
+namespace App\Ai\agents;
 
 use Exception;
 use NeuronAI\Agent;
 use NeuronAI\Providers\AIProviderInterface;
-use common\ai\Providers;
+use App\Ai\Providers;
 use NeuronAI\SystemPrompt;
-use common\ai\Prompts;
+use App\Ai\Prompts;
 
 /**
  * The Router agent is designed to route user queries to the appropriate specialized agent
