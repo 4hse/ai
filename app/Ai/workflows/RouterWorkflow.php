@@ -7,9 +7,8 @@ use common\ai\nodes\CallNode;
 use NeuronAI\Exceptions\WorkflowException;
 use NeuronAI\Workflow\Workflow;
 use NeuronAI\Workflow\WorkflowState;
-use common\ai\Yii2ChatHistory;
 use NeuronAI\Chat\History\ChatHistoryInterface;
-
+use NeuronAI\Chat\History\SQLChatHistory;
 class RouterWorkflow extends Workflow
 {
 
@@ -26,9 +25,10 @@ class RouterWorkflow extends Workflow
             'bearer' => $bearer
         ]));
 
-        $this->history = new Yii2ChatHistory(
-            sessionId: $sessionId,
-            userId: $userId,
+        $this->history = new SQLChatHistory(
+            thread_id: $userId . "|" . $sessionId,
+            pdo: \DB::connection()->getPdo(),
+            table: 'chat_history',
             contextWindow: 50000
         );
     }
