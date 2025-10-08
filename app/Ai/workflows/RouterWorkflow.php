@@ -4,11 +4,11 @@ namespace common\ai\workflows;
 
 use common\ai\nodes\RouterNode;
 use common\ai\nodes\CallNode;
+use common\ai\History\LaravelChatHistory;
 use NeuronAI\Exceptions\WorkflowException;
 use NeuronAI\Workflow\Workflow;
 use NeuronAI\Workflow\WorkflowState;
 use NeuronAI\Chat\History\ChatHistoryInterface;
-use NeuronAI\Chat\History\SQLChatHistory;
 class RouterWorkflow extends Workflow
 {
 
@@ -25,10 +25,9 @@ class RouterWorkflow extends Workflow
             'bearer' => $bearer
         ]));
 
-        $this->history = new SQLChatHistory(
-            thread_id: $userId . "|" . $sessionId,
-            pdo: \DB::connection()->getPdo(),
-            table: 'chat_history',
+        $this->history = new LaravelChatHistory(
+            thread_id: $sessionId,
+            user_id: (int) $userId,
             contextWindow: 50000
         );
     }
