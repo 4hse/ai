@@ -17,17 +17,17 @@ class RouterWorkflow extends Workflow
     /**
      * @throws WorkflowException
      */
-    public function __construct(string $query, string $sessionId, string $userId, string $bearer)
+    public function __construct(string $query, string $thread_id, string $user_id, string $bearer = 'fake')
     {
         parent::__construct(new WorkflowState([
             'query' => $query,
-            'userId' => $userId,
+            'userId' => $user_id,
             'bearer' => $bearer
         ]));
 
         $this->history = new LaravelChatHistory(
-            thread_id: $sessionId,
-            user_id: (int) $userId,
+            thread_id: $thread_id,
+            user_id: (int) $user_id,
             contextWindow: 50000
         );
     }
