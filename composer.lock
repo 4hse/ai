@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8fec89f3883aa20afc6755b3339f5113",
+    "content-hash": "7342200bd8da7612436ed4dd460e9242",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3235,16 +3235,16 @@
         },
         {
             "name": "php-mcp/server",
-            "version": "3.3.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-mcp/server.git",
-                "reference": "37b40d5e91f0600442677ddd226e5a22d5661ee1"
+                "reference": "d2c583302c4d08dea887c7cbae49c767b0ce75b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-mcp/server/zipball/37b40d5e91f0600442677ddd226e5a22d5661ee1",
-                "reference": "37b40d5e91f0600442677ddd226e5a22d5661ee1",
+                "url": "https://api.github.com/repos/php-mcp/server/zipball/d2c583302c4d08dea887c7cbae49c767b0ce75b9",
+                "reference": "d2c583302c4d08dea887c7cbae49c767b0ce75b9",
                 "shasum": ""
             },
             "require": {
@@ -3273,6 +3273,7 @@
             "suggest": {
                 "ext-pcntl": "For signal handling support when using StdioServerTransport with StreamSelectLoop"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3305,9 +3306,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-mcp/server/issues",
-                "source": "https://github.com/php-mcp/server/tree/3.3.0"
+                "source": "https://github.com/php-mcp/server/tree/main"
             },
-            "time": "2025-07-12T22:19:39+00:00"
+            "time": "2025-08-09T21:46:17+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -9950,7 +9951,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "php-mcp/server": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

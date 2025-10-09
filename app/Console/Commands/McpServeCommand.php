@@ -65,10 +65,9 @@ class McpServeCommand extends Command
                 enableJsonResponse: false,
                 stateless: false,
                 // Apply authentication middleware to all MCP requests
-                // TEMPORARILY DISABLED FOR TESTING
-                // middleware: [
-                //     app(ValidateMcpToken::class)
-                // ]
+                middlewares: [
+                    new ValidateMcpToken()
+                ]
             );
         }
 

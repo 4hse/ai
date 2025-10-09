@@ -10,7 +10,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "neuron-core/neuron-ai": "^2.4",
-        "php-mcp/server": "^3.0",
+        "php-mcp/server": "dev-main",
         "aws/aws-sdk-php": "^3.356"
     },
     "require-dev": {
