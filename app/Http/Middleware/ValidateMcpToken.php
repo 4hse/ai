@@ -32,11 +32,6 @@ readonly class ValidateMcpToken
     {
         // Extract Bearer token from Authorization header
         $authHeader = $request->getHeaderLine('Authorization');
-
-        // Debug logging
-        error_log("[MCP Auth] Authorization header: " . ($authHeader ?: 'MISSING'));
-        error_log("[MCP Auth] All headers: " . json_encode($request->getHeaders()));
-
         $token = null;
 
         if (preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
@@ -44,6 +39,7 @@ readonly class ValidateMcpToken
         }
 
         if (!$token) {
+            error_log("[MCP Auth] Missing authorization token from " . $request->getUri()->getPath());
             return new ReactResponse(
                 401,
                 [
@@ -62,13 +58,10 @@ readonly class ValidateMcpToken
 
         try {
             // Validate token with Keycloak
-            error_log("[MCP Auth] Validating token with Keycloak...");
             $tokenData = $this->tokenValidator->validate($token);
-            error_log("[MCP Auth] Token validation SUCCESS");
 
             // Extract user information
             $userInfo = $this->tokenValidator->getUserInfo($tokenData);
-            error_log("[MCP Auth] User: " . ($userInfo['username'] ?? 'unknown'));
 
             // Store token data and user info in request attributes
             $request = $request
