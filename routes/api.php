@@ -10,6 +10,7 @@ Route::middleware('keycloak.auth')->group(function () {
     Route::get('/chat-history', [ChatHistoryController::class, 'index']);
     Route::get('/chat-history/index', [ChatHistoryController::class, 'index']);
     Route::get('/chat-history/{thread_id}', [ChatHistoryController::class, 'show']);
+    Route::delete('/chat-history/{thread_id}', [ChatHistoryController::class, 'destroy']);
 
     // Chat streaming endpoint
     Route::post('/chat/stream', [ChatController::class, 'stream']);

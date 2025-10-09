@@ -59,4 +59,29 @@ class ChatHistoryController extends Controller
             'data' => $chatHistory,
         ]);
     }
+
+    /**
+     * Delete a specific chat thread
+     */
+    public function destroy(Request $request, string $thread_id): JsonResponse
+    {
+        // Get authenticated user email (used as user_id in chat history)
+        $user_id = $request->input('authenticated_email');
+
+        // Find chat history by primary key (thread_id)
+        $chatHistory = ChatHistory::find($thread_id);
+
+        if (!$chatHistory || $chatHistory->user_id !== $user_id) {
+            return response()->json([
+                'error' => 'Thread not found or access denied'
+            ], 404);
+        }
+
+        $chatHistory->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Thread deleted successfully'
+        ]);
+    }
 }
