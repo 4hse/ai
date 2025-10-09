@@ -11,6 +11,8 @@ use App\Ai\Events\SelectedAgentEvent;
 use App\Ai\Events\GenerationProgressEvent;
 use Exception;
 use Generator;
+use NeuronAI\Chat\Messages\ToolCallMessage;
+use NeuronAI\Chat\Messages\ToolCallResultMessage;
 use NeuronAI\Exceptions\AgentException;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\WorkflowState;
@@ -55,9 +57,15 @@ class CallNode extends Node
                 new UserMessage($state->get('query')),
             );
 
-        foreach ($stream as $text) {
-            yield new GenerationProgressEvent($text);
-            $answer .= $text;
+        foreach ($stream as $chunk) {
+            if ($chunk instanceof ToolCallMessage) {
+                yield new ProgressEvent($chunk);
+            } else if ($chunk instanceof ToolCallResultMessage) {
+                yield new ProgressEvent($chunk);
+            } else {
+                yield new GenerationProgressEvent($chunk);
+                $answer .= $chunk;
+            }
         }
 
         $state->set('answer', $answer);
