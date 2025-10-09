@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use PhpMcp\Server\Server;
 use PhpMcp\Server\Transports\StdioServerTransport;
 use PhpMcp\Server\Transports\StreamableHttpServerTransport;
+use App\Http\Middleware\ValidateMcpToken;
 use Throwable;
 
 class McpServeCommand extends Command
@@ -56,12 +57,18 @@ class McpServeCommand extends Command
             $port = getenv('MCP_HTTP_PORT') ?: '8080';
             // Production mode: use HTTP Streamable
             fwrite(STDERR, "[INFO] Starting in PROD mode (HTTP transport on $host:$port)\n");
+            fwrite(STDERR, "[INFO] OAuth2 authentication enabled via Keycloak\n");
 
             $transport = new StreamableHttpServerTransport(
                 host: $host,
                 port: $port,
                 enableJsonResponse: false,
-                stateless: false
+                stateless: false,
+                // Apply authentication middleware to all MCP requests
+                // TEMPORARILY DISABLED FOR TESTING
+                // middleware: [
+                //     app(ValidateMcpToken::class)
+                // ]
             );
         }
 

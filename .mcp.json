@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "4hse-mcp-local": {
+    "4hse-mcp-local-stdio": {
       "command": "docker",
       "args": [
         "exec",
@@ -9,7 +9,14 @@
         "php",
         "artisan",
         "mcp:serve"
-      ]
+      ],
+      "env": {
+        "MCP_MODE": "dev"
+      }
+    },
+    "4hse-mcp-local-http": {
+      "type": "http",
+      "url": "http://127.0.0.1:8080/mcp"
     }
   }
 }

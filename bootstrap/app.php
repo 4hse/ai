@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'chat/*',
         ]);
+
+        // Register MCP token validation middleware alias
+        $middleware->alias([
+            'mcp.auth' => \App\Http\Middleware\ValidateMcpToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

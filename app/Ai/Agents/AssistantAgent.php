@@ -22,7 +22,7 @@ class AssistantAgent extends Agent
     {
         return [
             ...McpConnector::make([
-                'url' => getenv('MCP_SERVER_URL'),
+                'url' => getenv('MCP_SERVER_URL') . '/mcp',
                 'token' => 'BEARER_TOKEN',
                 'timeout' => 30,
                 'headers' => [

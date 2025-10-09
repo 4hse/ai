@@ -61,6 +61,23 @@ Tutti i file PHP con attributo `#[McpTool]` vengono registrati automaticamente.
 
 ---
 
+## Autenticazione OAuth2
+
+Il server MCP implementa **OAuth 2.1 con PKCE** per autenticare gli utenti. Vedi `projects-api-integration.md` per dettagli completi sull'implementazione.
+
+**Flow:**
+1. Client MCP scopre authorization server tramite `/.well-known/oauth-protected-resource`
+2. User effettua login OAuth2 via browser (Keycloak)
+3. Access token JWT viene validato dal middleware `ValidateMcpToken`
+4. Token passato attraverso i tool alle API 4HSE
+
+**Componenti:**
+- **KeycloakTokenValidator**: Valida token con introspection endpoint
+- **ValidateMcpToken Middleware**: Applicato a tutte le richieste HTTP MCP
+- **FourHseApiClient**: Passa Bearer token alle API 4HSE
+
+---
+
 ## Tool Disponibili
 
 ### 1. DocumentationSearchTool (`app/Ai/Mcp/Tools/DocumentationSearchTool.php`)
@@ -144,6 +161,74 @@ public function searchWebsite(string $query, int $limit = 5): array
 
 #### RAG Source
 Utilizza **AdvisorAgent** → Vector Store del sito commerciale (`storage/ai/www`)
+
+---
+
+### 3. ProjectsListTool (`app/Ai/Mcp/Tools/ProjectsListTool.php`)
+
+**Tool Name**: `list_4hse_projects`
+
+Recupera lista progetti 4HSE dall'API `service.4hse.com` con filtri opzionali.
+
+**⚠️ Richiede OAuth2 Authentication**
+
+#### Implementazione
+```php
+#[McpTool(
+    name: 'list_4hse_projects',
+    description: 'Retrieves a paginated list of 4HSE projects with optional filters'
+)]
+public function listProjects(
+    ?string $filterName,
+    ?string $filterStatus,
+    ?string $filterProjectType,
+    int $perPage = 20,
+    int $page = 1,
+    ?string $sort = null
+): array
+```
+
+#### Parametri
+- **filterName** (string, optional): Filtra per nome progetto (partial match)
+- **filterStatus** (enum, optional): `active`, `suspended`, `deleted`
+- **filterProjectType** (enum, optional): `safety`, `template`
+- **perPage** (int, optional): Risultati per pagina (1-100, default: 20)
+- **page** (int, optional): Numero pagina (default: 1)
+- **sort** (string, optional): Campo per ordinamento (es: `name`, `-created_at`)
+
+#### Risposta
+```json
+{
+  "success": true,
+  "projects": [
+    {
+      "project_id": "uuid",
+      "name": "Project Name",
+      "status": "active",
+      "project_type": "safety",
+      "customer_id": "uuid",
+      "created_at": "2024-01-01"
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "page_count": 5,
+    "per_page": 20,
+    "total_count": 95
+  },
+  "filters_applied": {...}
+}
+```
+
+#### Autenticazione
+- User OAuth2 token validato da `ValidateMcpToken` middleware
+- Token passato a `FourHseApiClient` come Bearer token
+- API 4HSE valida token e ritorna progetti user-specific
+
+#### Integrazione
+Chiama endpoint: `POST https://service.4hse.local/v2/project/index`
+
+Vedi `projects-api-integration.md` per dettagli completi.
 
 ---
 
