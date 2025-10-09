@@ -18,16 +18,23 @@ class AssistantAgent extends Agent
 {
     static string $name = 'assistant';
 
+    public function __construct(
+        private readonly ?string $bearerToken = null
+    ) {
+    }
+
     protected function tools(): array
     {
+        $headers = [];
+        if ($this->bearerToken) {
+            $headers['Authorization'] = 'Bearer ' . $this->bearerToken;
+        }
+
         return [
             ...McpConnector::make([
-                'url' => 'http://ai:8080/mpc', //getenv('MCP_SERVER_URL') . '/mcp',
-                'token' => 'BEARER_TOKEN',
+                'url' => 'http://ai:8080/mcp',
                 'timeout' => 30,
-                'headers' => [
-                    //'x-custom-header' => 'value'
-                ]
+                'headers' => $headers
             ])->tools(),
         ];
     }

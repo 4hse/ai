@@ -49,14 +49,17 @@ class ChatController extends Controller
             ]
         );
 
+        // Get bearer token from request attributes (set by middleware)
+        $bearerToken = $request->attributes->get('bearer_token');
+
         // Set the appropriate headers for SSE
-        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id, $chatHistory) {
+        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id, $chatHistory, $bearerToken) {
             try {
                 if (!$chatHistory) {
                     throw new Exception("Unable to retrieve/create thread");
                 }
 
-                $workflow = new RouterWorkflow($message, $thread_id, $user_id);
+                $workflow = new RouterWorkflow($message, $thread_id, $user_id, $bearerToken);
                 $handler = $workflow->start();
 
                 foreach ($handler->streamEvents() as $event) {

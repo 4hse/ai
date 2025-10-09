@@ -37,16 +37,19 @@ class CallNode extends Node
 
         $agentName = $event->agentName;
 
+        // Get bearer token from state for AssistantAgent
+        $bearerToken = $state->get('bearer');
+
         $agent = match ($agentName) {
-            AdvisorAgent::$name => AdvisorAgent::class,
-            GuideAgent::$name => GuideAgent::class,
-            ConsultantAgent::$name => ConsultantAgent::class,
-            AssistantAgent::$name => AssistantAgent::class,
+            AdvisorAgent::$name => AdvisorAgent::make(),
+            GuideAgent::$name => GuideAgent::make(),
+            ConsultantAgent::$name => ConsultantAgent::make(),
+            AssistantAgent::$name => new AssistantAgent($bearerToken),
             default => throw new Exception("Unknown agent: $agentName"),
         };
 
         $answer = '';
-        $stream = $agent::make()
+        $stream = $agent
             ->withChatHistory($this->history)
             ->stream(
                 new UserMessage($state->get('query')),
