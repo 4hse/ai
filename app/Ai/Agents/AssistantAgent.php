@@ -23,6 +23,9 @@ class AssistantAgent extends Agent
     ) {
     }
 
+    /**
+     * @throws Exception
+     */
     protected function tools(): array
     {
         $headers = [];
