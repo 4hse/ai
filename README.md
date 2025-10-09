@@ -30,6 +30,7 @@ Server Model Context Protocol che espone tool 4HSE a sistemi AI esterni (Claude,
 - Tool per RAG documentazione 4HSE
 - Tool per RAG sito commerciale 4HSE
 - **Condivisione risorse**: I tool MCP utilizzano le stesse implementazioni RAG di NeuronAI
+- **Autenticazione**: OAuth2 con Keycloak per accesso sicuro ai tool MCP
 
 ## Stack Tecnologico
 
@@ -38,6 +39,46 @@ Server Model Context Protocol che espone tool 4HSE a sistemi AI esterni (Claude,
 - **MCP Implementation**: php-mcp
 - **Chat Widget**: DeepChat (frontend su 4hse-service)
 - **Database**: (configurato tramite Laravel standard)
+
+## Testing MCP Server con Claude Code
+
+### Generazione Token OAuth2
+
+Per testare il server MCP con Claude Code, è necessario ottenere un access token da Keycloak:
+
+```bash
+# Ottieni il token (sostituisci USERNAME e PASSWORD con le tue credenziali)
+curl -X POST 'https://auth.4hse.local/realms/4hse/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'client_id=mcp-server-4hse' \
+  -d 'client_secret=R1CrmmBQcGvY52rCxqgGyRcfLBel7DpX' \
+  -d 'grant_type=password' \
+  -d 'username=YOUR_USERNAME' \
+  -d 'password=YOUR_PASSWORD' \
+  -d 'scope=openid profile email' \
+  --insecure | jq -r '.access_token'
+```
+
+### Configurazione Claude Code
+
+1. **Esporta il token** nel terminale dove avvierai Claude Code:
+   ```bash
+   export MCP_TOKEN="your_access_token_here"
+   ```
+
+2. **Avvia Claude Code** nello stesso terminale:
+   ```bash
+   claude-code
+   ```
+
+3. **Verifica la connessione** con il comando:
+   ```
+   /mcp
+   ```
+
+Il server MCP HTTP (`4hse-mcp-local-http`) dovrebbe apparire come connesso.
+
+**Nota:** I token hanno una durata di ~24 ore. Quando scadono, genera un nuovo token con il comando curl sopra.
 
 ## File di Documentazione
 
