@@ -55,10 +55,16 @@ class KeycloakTokenValidator
             }
 
             // Validate client_id matches (audience validation)
+            // Accept tokens from multiple allowed clients
+            $allowedClients = [
+                config('keycloak.client_id'), // mcp-server-4hse
+                'service', // 4HSE Service frontend client
+            ];
+
             $clientId = $data['client_id'] ?? $data['azp'] ?? null;
-            if ($clientId !== config('keycloak.client_id')) {
+            if ($clientId && !in_array($clientId, $allowedClients)) {
                 Cache::put($cacheKey, false, 60);
-                throw new Exception('Token audience mismatch');
+                throw new Exception('Token audience mismatch: ' . $clientId);
             }
 
             // Cache valid token data (cache until expiration, max 5 minutes)

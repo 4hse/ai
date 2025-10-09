@@ -20,6 +20,3 @@ Route::get('/.well-known/oauth-protected-resource', function () {
     ]);
 });
 
-Route::get('/chat-history/{thread_id}', [ChatHistoryController::class, 'show']);
-
-Route::post('/chat/stream', [ChatController::class, 'stream']);
