@@ -35,9 +35,9 @@ class CallNode extends Node
      */
     public function __invoke(SelectedAgentEvent $event, WorkflowState $state): Generator|StopEvent
     {
-        yield new ProgressEvent("Calling the agent...");
-
         $agentName = $event->agentName;
+
+        yield new ProgressEvent("Calling the agent $agentName...");
 
         // Get bearer token from state for AssistantAgent
         $bearerToken = $state->get('bearer');
