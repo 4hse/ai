@@ -24,7 +24,7 @@ class GuideAgent extends RAG
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider('bedrock.claude-3-sonnet-20240229-v1:0');
+        return Providers::getProvider('gemini-2.5-flash');
     }
 
     /**

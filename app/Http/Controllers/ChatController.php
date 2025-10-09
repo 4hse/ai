@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Ai\Events\ProgressEvent;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\ChatHistory;
 use App\Ai\Workflows\RouterWorkflow;
@@ -63,9 +64,9 @@ class ChatController extends Controller
                 $handler = $workflow->start();
 
                 foreach ($handler->streamEvents() as $event) {
-                    /*if ($event instanceof ProgressEvent) {
-                        echo $event->message . "\n";
-                    }*/
+                    if ($event instanceof ProgressEvent) {
+                        $this->sendMessage($thread_id, $event->message, 'progress');
+                    }
                     if ($event instanceof GenerationProgressEvent) {
                         $this->sendMessage($thread_id, $event->text);
                     }
