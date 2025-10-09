@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\ChatHistory;
-use App\Ai\workflows\RouterWorkflow;
+use App\Ai\Workflows\RouterWorkflow;
 use Exception;
 use Illuminate\Http\Request;
 use App\Ai\events\GenerationProgressEvent;
+use Illuminate\Http\JsonResponse;
 
 
 class ChatController extends Controller
 {
 
-    public function stream(Request $request)
+    public function stream(Request $request): JsonResponse|StreamedResponse
     {
         $thread_id = $request->input('thread_id');
         $messages = $request->input('messages', []);

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Ai\workflows;
+namespace App\Ai\Workflows;
 
-use App\Ai\nodes\RouterNode;
-use App\Ai\nodes\CallNode;
+use App\Ai\Nodes\RouterNode;
+use App\Ai\Nodes\CallNode;
 use App\Ai\History\LaravelChatHistory;
 use NeuronAI\Exceptions\WorkflowException;
 use NeuronAI\Workflow\Workflow;

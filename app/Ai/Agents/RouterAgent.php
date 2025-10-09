@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Ai\agents;
+namespace App\Ai\Agents;
 
-use App\Ai\Prompts;
 use Exception;
 use NeuronAI\Agent;
-use NeuronAI\SystemPrompt;
 use NeuronAI\Providers\AIProviderInterface;
 use App\Ai\Providers;
+use NeuronAI\SystemPrompt;
+use App\Ai\Prompts;
 
 /**
- * The Consultant agent is designed to provide expert advice on workplace safety
+ * The Router agent is designed to route user queries to the appropriate specialized agent
  */
-class ConsultantAgent extends Agent
+class RouterAgent extends Agent
 {
-    static string $name = 'consultant';
+    static string $name = 'router';
 
     /**
      * @throws Exception
@@ -28,7 +28,7 @@ class ConsultantAgent extends Agent
     {
         return (string) new SystemPrompt(
             background: [
-                Prompts::CONSULTANT_AGENT_INSTRUCTIONS
+                Prompts::ROUTER_AGENT_INSTRUCTIONS
             ],
         );
     }

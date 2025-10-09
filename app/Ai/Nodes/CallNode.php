@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Ai\nodes;
+namespace App\Ai\Nodes;
 
-use App\Ai\agents\AdvisorAgent;
-use App\Ai\agents\AssistantAgent;
-use App\Ai\agents\ConsultantAgent;
-use App\Ai\agents\GuideAgent;
-use App\Ai\events\ProgressEvent;
-use App\Ai\events\SelectedAgentEvent;
-use App\Ai\events\GenerationProgressEvent;
+use App\Ai\Agents\AdvisorAgent;
+use App\Ai\Agents\AssistantAgent;
+use App\Ai\Agents\ConsultantAgent;
+use App\Ai\Agents\GuideAgent;
+use App\Ai\Events\ProgressEvent;
+use App\Ai\Events\SelectedAgentEvent;
+use App\Ai\Events\GenerationProgressEvent;
 use Exception;
 use Generator;
 use NeuronAI\Exceptions\AgentException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ai\schema;
+namespace App\Ai\Schema;
 
 use NeuronAI\StructuredOutput\SchemaProperty;
 

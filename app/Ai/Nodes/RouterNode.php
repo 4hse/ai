@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Ai\nodes;
+namespace App\Ai\Nodes;
 
-use App\Ai\events\ProgressEvent;
-use App\Ai\events\SelectedAgentEvent;
+use App\Ai\Events\ProgressEvent;
+use App\Ai\Events\SelectedAgentEvent;
 use Generator;
 use NeuronAI\Workflow\Node;
 use NeuronAI\Workflow\WorkflowState;
 use NeuronAI\Chat\Messages\UserMessage;
 use NeuronAI\Workflow\StartEvent;
 use NeuronAI\Chat\History\ChatHistoryInterface;
-use App\Ai\agents\RouterAgent;
-use App\Ai\schema\SelectedAgent;
+use App\Ai\Agents\RouterAgent;
+use App\Ai\Schema\SelectedAgent;
 use App\Ai\Prompts;
 
 class RouterNode extends Node

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ai\agents;
+namespace App\Ai\Agents;
 
 use Exception;
 use NeuronAI\Exceptions\VectorStoreException;
@@ -13,11 +13,11 @@ use App\Ai\Providers;
 use App\Ai\EmbeddingsProviders;
 
 /**
- * The Guide agent is designed to provide documentation support for 4hse
+ * The Advisor agent is designed to provide commercial support for 4hse
  */
-class GuideAgent extends RAG
+class AdvisorAgent extends RAG
 {
-    static string $name = 'guide';
+    static string $name = 'advisor';
 
     /**
      * @throws Exception
@@ -42,7 +42,7 @@ class GuideAgent extends RAG
     {
         return new FileVectorStore(
             directory: storage_path('ai'),
-            name: 'docs'
+            name: 'www'
         );
     }
 }

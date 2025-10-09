@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ai\events;
+namespace App\Ai\Events;
 
 use NeuronAI\Workflow\Event;
 

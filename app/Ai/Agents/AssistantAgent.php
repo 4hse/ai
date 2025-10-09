@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ai\agents;
+namespace App\Ai\Agents;
 
 
 use NeuronAI\MCP\McpConnector;
@@ -22,7 +22,7 @@ class AssistantAgent extends Agent
     {
         return [
             ...McpConnector::make([
-                'url' => 'http://mcp-server:8080/mcp',
+                'url' => getenv('MCP_SERVER_URL'),
                 'token' => 'BEARER_TOKEN',
                 'timeout' => 30,
                 'headers' => [

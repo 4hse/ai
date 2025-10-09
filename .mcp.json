@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "4hse-mcp-local": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "4hse-ai",
+        "php",
+        "artisan",
+        "mcp:serve"
+      ]
+    }
+  }
+}
