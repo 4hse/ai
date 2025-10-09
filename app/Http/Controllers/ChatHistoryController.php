@@ -45,12 +45,10 @@ class ChatHistoryController extends Controller
         // Get authenticated user email (used as user_id in chat history)
         $user_id = $request->input('authenticated_email');
 
-        // Find chat history for the authenticated user
-        $chatHistory = ChatHistory::where('thread_id', $thread_id)
-            ->where('user_id', $user_id)
-            ->first();
+        // Find chat history by primary key (thread_id)
+        $chatHistory = ChatHistory::find($thread_id);
 
-        if (!$chatHistory) {
+        if (!$chatHistory || $chatHistory->user_id !== $user_id) {
             return response()->json([
                 'error' => 'Thread not found or access denied'
             ], 404);

@@ -12,14 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_history', function (Blueprint $table) {
-            $table->id();
-            $table->string('thread_id');
+            $table->string('thread_id')->primary();
             $table->string('user_id');
             $table->longText('messages');
             $table->timestamps();
 
-            $table->unique(['thread_id', 'user_id']);
-            $table->index('thread_id');
             $table->index('user_id');
         });
     }

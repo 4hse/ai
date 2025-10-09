@@ -42,13 +42,24 @@ class ChatController extends Controller
             ], 400);
         }
 
-        $chatHistory = ChatHistory::firstOrCreate(
-            ['thread_id' => $thread_id],
-            [
+        // Check if thread exists and verify ownership
+        $chatHistory = ChatHistory::find($thread_id);
+
+        if ($chatHistory) {
+            // Thread exists, verify it belongs to the authenticated user
+            if ($chatHistory->user_id !== $user_id) {
+                return response()->json([
+                    'error' => 'Access denied to this thread'
+                ], 403);
+            }
+        } else {
+            // Create new thread for this user
+            $chatHistory = ChatHistory::create([
+                'thread_id' => $thread_id,
                 'user_id' => $user_id,
                 'messages' => []
-            ]
-        );
+            ]);
+        }
 
         // Get bearer token from request attributes (set by middleware)
         $bearerToken = $request->attributes->get('bearer_token');

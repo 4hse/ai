@@ -9,6 +9,12 @@ class ChatHistory extends Model
 {
     protected $table = 'chat_history';
 
+    protected $primaryKey = 'thread_id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'thread_id',
         'user_id',
