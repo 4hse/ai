@@ -36,28 +36,28 @@ class ChatController extends Controller
 
         // Set the appropriate headers for SSE
         $response = new StreamedResponse(function () use ($message, $thread_id, $user_id) {
-            try {
+            //try {
                 /*if (!$chatHistory) {
                     throw new Exception("Unable to retreive/create thread");
                 }*/
 
-                while (true) {
-                    $workflow = new RouterWorkflow($message, $thread_id, $user_id);
-                    $handler = $workflow->start();
 
-                    foreach ($handler->streamEvents() as $event) {
-                        /*if ($event instanceof ProgressEvent) {
-                            echo $event->message . "\n";
-                        }*/
-                        if ($event instanceof GenerationProgressEvent) {
-                            $this->sendMessage($thread_id, $event->text);
-                        }
+                $workflow = new RouterWorkflow($message, $thread_id, $user_id);
+                $handler = $workflow->start();
+
+                foreach ($handler->streamEvents() as $event) {
+                    /*if ($event instanceof ProgressEvent) {
+                        echo $event->message . "\n";
+                    }*/
+                    if ($event instanceof GenerationProgressEvent) {
+                        $this->sendMessage($thread_id, $event->text);
                     }
                 }
 
-            }  catch (Exception $e) {
-                $this->sendMessage($thread_id, "service", "error");
-            }
+
+            //}  catch (Exception $e) {
+                //$this->sendMessage($thread_id, "service", "error");
+            //}
         });
 
         $response->headers->set('Content-Type', 'text/event-stream');
@@ -77,11 +77,9 @@ class ChatController extends Controller
 
         echo "data: " . json_encode($data) . "\n\n";
 
-        //if (ob_get_level()) {
-        ob_flush();
-        //}
+        if (ob_get_level()) {
+            ob_flush();
+        }
         flush();
-
-        sleep(1);
     }
 }
