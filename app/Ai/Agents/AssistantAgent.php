@@ -32,7 +32,7 @@ class AssistantAgent extends Agent
 
         return [
             ...McpConnector::make([
-                'url' => 'http://ai:8080/mcp',
+                'url' => getenv('MCP_SERVER_URL'),
                 'timeout' => 30,
                 'headers' => $headers
             ])->tools(),
