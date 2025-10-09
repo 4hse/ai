@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Prompts;
 use Exception;
 use NeuronAI\Exceptions\VectorStoreException;
 use NeuronAI\Providers\AIProviderInterface;
@@ -11,6 +12,7 @@ use NeuronAI\RAG\VectorStore\FileVectorStore;
 use NeuronAI\RAG\VectorStore\VectorStoreInterface;
 use App\Ai\Providers;
 use App\Ai\EmbeddingsProviders;
+use NeuronAI\SystemPrompt;
 
 /**
  * The Advisor agent is designed to provide commercial support for 4hse
@@ -43,6 +45,15 @@ class AdvisorAgent extends RAG
         return new FileVectorStore(
             directory: storage_path('ai'),
             name: 'www'
+        );
+    }
+
+    public function instructions(): string
+    {
+        return (string) new SystemPrompt(
+            background: [
+                Prompts::ADVISOR_AGENT_INSTRUCTIONS
+            ],
         );
     }
 }

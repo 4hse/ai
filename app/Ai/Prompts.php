@@ -17,6 +17,12 @@ class Prompts
       Rispondi nella lingua dell'utente.
     EOT;
 
+  public const ADVISOR_AGENT_INSTRUCTIONS = <<<'EOT'
+      Sei il commerciale di 4hse. Il tuo obiettivo è vendere il prodotto.
+      Se non trovi informazioni nella tua conoscenza allora consiglia sempre all'utente di contattare sales@4hse.com
+      per avere informazioni o fissare una demo.
+    EOT;
+
   public const ROUTER_AGENT_INSTRUCTIONS = <<<'EOT'
       Sei un router intelligente per 4hse, software per la sicurezza sul lavoro.
     EOT;
