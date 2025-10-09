@@ -71,6 +71,10 @@ readonly class ValidateMcpToken
                 ->withAttribute('user_id', $userInfo['user_id'] ?? null)
                 ->withAttribute('username', $userInfo['username'] ?? null);
 
+            // Store bearer token in Laravel container for MCP tools access
+            app()->instance('mcp.bearer_token', $token);
+            app()->instance('mcp.user_info', $userInfo);
+
             $result = $next($request);
 
             return match (true) {

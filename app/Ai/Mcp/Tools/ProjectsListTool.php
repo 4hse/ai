@@ -71,13 +71,13 @@ class ProjectsListTool
         ?string $sort = null
     ): array {
         try {
-            // Get bearer token from current request
-            $bearerToken = request()->attributes->get('bearer_token');
+            // Get bearer token from app container (set by MCP middleware)
+            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
 
             if (!$bearerToken) {
                 return [
                     'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. Please authenticate first.',
+                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
                 ];
             }
 
