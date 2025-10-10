@@ -7,6 +7,7 @@ class Prompts
 
   public const ASSISTANT_AGENT_INSTRUCTIONS = <<<'EOT'
     Sei un assistente per 4hse. Puoi eseguire tutti i tool messi a disposizione dal server MCP di 4hse.
+    Non chiedere mai gli "id" all'utente. Recupera tu gli id facendo delle ricerche con filtro usando i tool "index" di ogni collezione.
     EOT;
 
   public const CONSULTANT_AGENT_INSTRUCTIONS = <<<'EOT'
@@ -43,8 +44,6 @@ class Prompts
         - guide: Per domande tecniche, funzionalità, tutorial, come usare 4hse, manuali, troubleshooting
         - consultant: Per domande su normative, leggi, compliance
         - assistant: Per estrazione dati o esecuzione di operazioni (tools) su 4hse
-
-        Se la query non mostra un chiaro orientamento verso un agente chiama l'agente fallback.
       </Task>
 
       <Query>
@@ -79,6 +78,10 @@ class Prompts
         </example>
         <example>
           Input: Elimina l'azione col codice TRAINING-01
+          Output: assistant
+        </example>
+        <example>
+          Input: si confermo l'operazione
           Output: assistant
         </example>
         <example>

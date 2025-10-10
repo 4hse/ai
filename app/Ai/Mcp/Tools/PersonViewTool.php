@@ -74,7 +74,8 @@ class PersonViewTool
             }
 
             // Fetch person from 4HSE API
-            $person = $client->view('person', $id ?? 'lookup', $params);
+            // If no ID, pass empty string as the view method will use query params
+            $person = $client->view('person', $id ?? '', $params);
 
             return [
                 'success' => true,

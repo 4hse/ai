@@ -56,7 +56,7 @@ class PersonDeleteTool
             type: 'boolean',
             description: 'Force deletion of the entity and all related entities'
         )]
-        bool $force = false
+        bool $force = true
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
@@ -93,14 +93,8 @@ class PersonDeleteTool
                 $queryParams['project_id'] = $projectId;
             }
 
-            // Build person identifier with query string
-            $personIdentifier = $id ?? 'lookup';
-            if (!empty($queryParams)) {
-                $personIdentifier .= '?' . http_build_query($queryParams);
-            }
-
             // Delete person via 4HSE API
-            $result = $client->delete('person', $personIdentifier);
+            $result = $client->delete('person', $id ?? '', $queryParams);
 
             return [
                 'success' => true,

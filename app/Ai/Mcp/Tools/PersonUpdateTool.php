@@ -257,14 +257,10 @@ class PersonUpdateTool
             if (!$id) {
                 $queryParams['code'] = $code;
                 $queryParams['project_id'] = $projectId;
-                // For update, we need to append query params to the ID
-                $personIdentifier = 'lookup?' . http_build_query($queryParams);
-            } else {
-                $personIdentifier = $id;
             }
 
             // Update person via 4HSE API
-            $person = $client->update('person', $personIdentifier, $data);
+            $person = $client->update('person', $id ?? '', $data, $queryParams);
 
             return [
                 'success' => true,

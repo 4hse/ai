@@ -99,7 +99,11 @@ class FourHseApiClient
             'params' => $params
         ]);
 
-        $response = $this->request('GET', "/v2/{$resource}/view/{$id}", $params);
+        // Build query string with ID and any additional params
+        $queryParams = array_merge(['id' => $id], $params);
+        $queryString = http_build_query($queryParams);
+
+        $response = $this->request('GET', "/v2/{$resource}/view?{$queryString}");
 
         if (!$response->successful()) {
             Log::error("Failed to fetch {$resource} view", [
@@ -164,20 +168,27 @@ class FourHseApiClient
      * Generic update operation - Update an existing resource
      *
      * @param string $resource Resource name (e.g., 'project', 'user')
-     * @param int|string $id Resource ID
+     * @param int|string $id Resource ID or empty string if using alternative lookup
      * @param array $data Resource data to update
+     * @param array $queryParams Additional query parameters (e.g., code, project_id for alternative lookup)
      * @return array Updated resource data
      * @throws Exception
      */
-    public function update(string $resource, int|string $id, array $data): array
+    public function update(string $resource, int|string $id, array $data, array $queryParams = []): array
     {
         Log::info("Updating {$resource} via 4HSE API", [
             'resource' => $resource,
             'id' => $id,
-            'has_data' => !empty($data)
+            'has_data' => !empty($data),
+            'query_params' => $queryParams
         ]);
 
-        $response = $this->request('PUT', "/v2/{$resource}/update/{$id}", $data);
+        // Build query string
+        $params = $id ? ['id' => $id] : [];
+        $params = array_merge($params, $queryParams);
+        $queryString = http_build_query($params);
+
+        $response = $this->request('PUT', "/v2/{$resource}/update?{$queryString}", $data);
 
         if (!$response->successful()) {
             Log::error("Failed to update {$resource}", [
@@ -205,18 +216,25 @@ class FourHseApiClient
      * Generic delete operation - Delete a resource
      *
      * @param string $resource Resource name (e.g., 'project', 'user')
-     * @param int|string $id Resource ID
+     * @param int|string $id Resource ID or empty string if using alternative lookup
+     * @param array $queryParams Additional query parameters (e.g., code, project_id, force, historicize)
      * @return bool Success status
      * @throws Exception
      */
-    public function delete(string $resource, int|string $id): bool
+    public function delete(string $resource, int|string $id, array $queryParams = []): bool
     {
         Log::info("Deleting {$resource} via 4HSE API", [
             'resource' => $resource,
-            'id' => $id
+            'id' => $id,
+            'query_params' => $queryParams
         ]);
 
-        $response = $this->request('DELETE', "/v2/{$resource}/delete/{$id}");
+        // Build query string
+        $params = $id ? ['id' => $id] : [];
+        $params = array_merge($params, $queryParams);
+        $queryString = http_build_query($params);
+
+        $response = $this->request('DELETE', "/v2/{$resource}/delete?{$queryString}");
 
         if (!$response->successful()) {
             Log::error("Failed to delete {$resource}", [
