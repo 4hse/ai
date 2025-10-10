@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Exception;
@@ -19,13 +20,19 @@ class FourHseApiClient
     private bool $verifySSL;
 
     public function __construct(
-        private string $bearerToken
+        private readonly string $bearerToken
     ) {
         $this->baseUrl = config('fourhse.api.base_url');
         $this->timeout = config('fourhse.api.timeout');
         $this->retryTimes = config('fourhse.api.retry_times');
         $this->retryDelay = config('fourhse.api.retry_delay');
         $this->verifySSL = config('fourhse.api.verify_ssl');
+
+        Log::debug('FourHseApiClient initialized', [
+            'base_url' => $this->baseUrl,
+            'timeout' => $this->timeout,
+            'retry_times' => $this->retryTimes
+        ]);
     }
 
     /**
@@ -37,9 +44,19 @@ class FourHseApiClient
      */
     public function getProjects(array $params = []): array
     {
+        Log::info('Fetching projects from 4HSE API', [
+            'params' => $params
+        ]);
+
         $response = $this->request('POST', '/v2/project/index', $params);
 
         if (!$response->successful()) {
+            Log::error('Failed to fetch projects', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'params' => $params
+            ]);
+
             throw new Exception(
                 'Failed to fetch projects: ' . $response->body(),
                 $response->status()
@@ -48,6 +65,12 @@ class FourHseApiClient
 
         // Extract pagination headers
         $pagination = $this->extractPaginationHeaders($response);
+
+        Log::info('Projects fetched successfully', [
+            'total_count' => $pagination['total_count'],
+            'current_page' => $pagination['current_page'],
+            'page_count' => $pagination['page_count']
+        ]);
 
         return [
             'projects' => $response->json(),
@@ -65,10 +88,24 @@ class FourHseApiClient
      */
     private function request(string $method, string $endpoint, array $data = []): Response
     {
+        Log::debug('Making API request', [
+            'method' => $method,
+            'endpoint' => $endpoint,
+            'has_data' => !empty($data)
+        ]);
+
         $http = $this->buildHttpClient();
 
-        return $http->retry($this->retryTimes, $this->retryDelay)
+        $response = $http->retry($this->retryTimes, $this->retryDelay)
             ->$method($this->baseUrl . $endpoint, $data);
+
+        Log::debug('API request completed', [
+            'method' => $method,
+            'endpoint' => $endpoint,
+            'status' => $response->status()
+        ]);
+
+        return $response;
     }
 
     /**

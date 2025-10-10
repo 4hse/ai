@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 /**
@@ -23,16 +24,24 @@ class KeycloakTokenValidator
         // Cache key based on token hash
         $cacheKey = 'token_validation:' . hash('sha256', $token);
 
+        Log::debug('Token validation requested', [
+            'cache_key' => substr($cacheKey, 0, 32) . '...'
+        ]);
+
         // Check cache first (tokens are short-lived, cache for 1 minute)
         $cached = Cache::get($cacheKey);
         if ($cached !== null) {
             if ($cached === false) {
+                Log::warning('Token validation failed (from cache)');
                 throw new Exception('Invalid or expired token (cached)');
             }
+            Log::debug('Token validation succeeded (from cache)');
             return $cached;
         }
 
         try {
+            Log::debug('Calling Keycloak introspection endpoint');
+
             $response = Http::asForm()
                 ->when(!config('keycloak.verify_ssl'), fn($http) => $http->withoutVerifying())
                 ->post(config('keycloak.endpoints.introspection'), [
@@ -42,6 +51,10 @@ class KeycloakTokenValidator
                 ]);
 
             if (!$response->successful()) {
+                Log::error('Keycloak introspection failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
                 Cache::put($cacheKey, false, 60); // Cache failure for 1 minute
                 throw new Exception('Token introspection failed: ' . $response->body());
             }
@@ -50,6 +63,9 @@ class KeycloakTokenValidator
 
             // Check if token is active
             if (!($data['active'] ?? false)) {
+                Log::warning('Token is not active', [
+                    'username' => $data['preferred_username'] ?? 'unknown'
+                ]);
                 Cache::put($cacheKey, false, 60);
                 throw new Exception('Token is not active or has expired');
             }
@@ -63,6 +79,10 @@ class KeycloakTokenValidator
 
             $clientId = $data['client_id'] ?? $data['azp'] ?? null;
             if ($clientId && !in_array($clientId, $allowedClients)) {
+                Log::error('Token audience mismatch', [
+                    'client_id' => $clientId,
+                    'allowed_clients' => $allowedClients
+                ]);
                 Cache::put($cacheKey, false, 60);
                 throw new Exception('Token audience mismatch: ' . $clientId);
             }
@@ -74,9 +94,18 @@ class KeycloakTokenValidator
                 Cache::put($cacheKey, $data, $ttl);
             }
 
+            Log::info('Token validated successfully', [
+                'username' => $data['preferred_username'] ?? 'unknown',
+                'client_id' => $clientId,
+                'ttl' => $ttl
+            ]);
+
             return $data;
 
         } catch (Exception $e) {
+            Log::error('Token validation exception', [
+                'error' => $e->getMessage()
+            ]);
             Cache::put($cacheKey, false, 60);
             throw $e;
         }
