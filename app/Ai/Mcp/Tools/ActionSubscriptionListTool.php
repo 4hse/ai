@@ -39,7 +39,7 @@ class ActionSubscriptionListTool
      */
     #[McpTool(
         name: 'list_4hse_action_subscriptions',
-        description: 'Retrieves a paginated list of 4HSE action subscriptions with optional filters. Requires OAuth2 authentication.'
+        description: 'List preventive actions assigned to resources (people, equipment, materials, etc.). Use this when user asks for "actions of [person/resource name]", "expired actions", "valid actions", "new actions", or to find which actions are subscribed/assigned to specific resources. Filter by subscriber name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), status: NEW (new/pending actions), VALID (valid/active actions), EXPIRED (expired/overdue/scadute actions). Requires OAuth2 authentication.'
     )]
     public function listActionSubscriptions(
         #[Schema(
