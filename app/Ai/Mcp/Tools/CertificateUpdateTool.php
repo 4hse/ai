@@ -74,8 +74,7 @@ class CertificateUpdateTool
 
         #[Schema(
             type: 'string',
-            description: 'Resource ID',
-            enum: ['PERSON', 'MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
+            description: 'Resource ID in UUID format: ID of the person, material, equipment, etc. the certificate is for'
         )]
         ?string $resourceId = null,
 

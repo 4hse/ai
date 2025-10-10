@@ -46,7 +46,7 @@ class CertificateListTool
 
         #[Schema(
             type: 'string',
-            description: 'Filter by resource ID (UUID format or resource type)'
+            description: 'Filter by resource ID (UUID): ID of person, material, equipment, etc.'
         )]
         ?string $filterResourceId = null,
 

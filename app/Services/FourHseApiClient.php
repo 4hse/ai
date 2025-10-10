@@ -271,7 +271,8 @@ class FourHseApiClient
         Log::debug('Making API request', [
             'method' => $method,
             'endpoint' => $endpoint,
-            'has_data' => !empty($data)
+            'has_data' => !empty($data),
+            'data' => $data
         ]);
 
         $http = $this->buildHttpClient();

@@ -75,8 +75,7 @@ class CertificateActionListTool
 
         #[Schema(
             type: 'string',
-            description: 'Filter by resource ID',
-            enum: ['PERSON', 'MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
+            description: 'Filter by resource ID (UUID): ID of person, material, equipment, etc.'
         )]
         ?string $filterResourceId = null,
 

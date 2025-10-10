@@ -55,8 +55,7 @@ class CertificateCreateTool
 
         #[Schema(
             type: 'string',
-            description: 'Resource ID (required)',
-            enum: ['PERSON', 'MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
+            description: 'Resource ID in UUID format (required): ID of the person, material, equipment, etc. the certificate is for'
         )]
         string $resourceId,
 
