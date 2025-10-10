@@ -88,13 +88,13 @@ class CallNode extends Node
                         'tool' => $chunk->toolName ?? 'unknown',
                         'call_count' => $toolCallCount
                     ]);
-                    yield new ProgressEvent($chunk);
+                    yield new ProgressEvent('Calling tools');
                 } else if ($chunk instanceof ToolCallResultMessage) {
                     Log::debug('Tool result received', [
                         'agent' => $agentName,
                         'result_length' => strlen($chunk)
                     ]);
-                    yield new ProgressEvent($chunk);
+                    yield new ProgressEvent('Examining tool response');
                 } else {
                     yield new GenerationProgressEvent($chunk);
                     $answer .= $chunk;
