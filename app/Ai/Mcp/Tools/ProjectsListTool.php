@@ -111,12 +111,12 @@ class ProjectsListTool
                 $params['sort'] = $sort;
             }
 
-            // Fetch projects from 4HSE API
-            $result = $client->getProjects($params);
+            // Fetch projects from 4HSE API using generic index method
+            $result = $client->index('project', $params);
 
             return [
                 'success' => true,
-                'projects' => $result['projects'],
+                'projects' => $result['data'],
                 'pagination' => $result['pagination'],
                 'filters_applied' => [
                     'name' => $filterName,

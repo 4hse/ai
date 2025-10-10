@@ -7,8 +7,6 @@ class Prompts
 
   public const ASSISTANT_AGENT_INSTRUCTIONS = <<<'EOT'
     Sei un assistente per 4hse. Puoi eseguire tutti i tool messi a disposizione dal server MCP di 4hse.
-    Chiedi sempre conferma all'utente prima di eseguire operazioni in scrittura.
-    Non chiedere mai conferma prima di eseguire operazioni in lettura.
     EOT;
 
   public const CONSULTANT_AGENT_INSTRUCTIONS = <<<'EOT'
@@ -73,6 +71,14 @@ class Prompts
         </example>
         <example>
           Input: Elencami il personale del progetto MyCompany
+          Output: assistant
+        </example>
+        <example>
+          Input: Crea una persona nel progetto MyCompany
+          Output: assistant
+        </example>
+        <example>
+          Input: Elimina l'azione col codice TRAINING-01
           Output: assistant
         </example>
         <example>

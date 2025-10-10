@@ -36,29 +36,32 @@ class FourHseApiClient
     }
 
     /**
-     * Get list of projects with optional filters
+     * Generic index operation - List resources with optional filters
      *
+     * @param string $resource Resource name (e.g., 'project', 'user')
      * @param array $params Request parameters (filter, per-page, page, sort, history)
-     * @return array Response with projects and pagination
+     * @return array Response with data and pagination
      * @throws Exception
      */
-    public function getProjects(array $params = []): array
+    public function index(string $resource, array $params = []): array
     {
-        Log::info('Fetching projects from 4HSE API', [
+        Log::info("Fetching {$resource} list from 4HSE API", [
+            'resource' => $resource,
             'params' => $params
         ]);
 
-        $response = $this->request('POST', '/v2/project/index', $params);
+        $response = $this->request('POST', "/v2/{$resource}/index", $params);
 
         if (!$response->successful()) {
-            Log::error('Failed to fetch projects', [
+            Log::error("Failed to fetch {$resource} list", [
+                'resource' => $resource,
                 'status' => $response->status(),
                 'body' => $response->body(),
                 'params' => $params
             ]);
 
             throw new Exception(
-                'Failed to fetch projects: ' . $response->body(),
+                "Failed to fetch {$resource} list: " . $response->body(),
                 $response->status()
             );
         }
@@ -66,16 +69,175 @@ class FourHseApiClient
         // Extract pagination headers
         $pagination = $this->extractPaginationHeaders($response);
 
-        Log::info('Projects fetched successfully', [
+        Log::info("{$resource} list fetched successfully", [
+            'resource' => $resource,
             'total_count' => $pagination['total_count'],
             'current_page' => $pagination['current_page'],
             'page_count' => $pagination['page_count']
         ]);
 
         return [
-            'projects' => $response->json(),
+            'data' => $response->json(),
             'pagination' => $pagination,
         ];
+    }
+
+    /**
+     * Generic view operation - Get a single resource by ID
+     *
+     * @param string $resource Resource name (e.g., 'project', 'user')
+     * @param int|string $id Resource ID
+     * @param array $params Optional request parameters
+     * @return array Resource data
+     * @throws Exception
+     */
+    public function view(string $resource, int|string $id, array $params = []): array
+    {
+        Log::info("Fetching {$resource} view from 4HSE API", [
+            'resource' => $resource,
+            'id' => $id,
+            'params' => $params
+        ]);
+
+        $response = $this->request('GET', "/v2/{$resource}/view/{$id}", $params);
+
+        if (!$response->successful()) {
+            Log::error("Failed to fetch {$resource} view", [
+                'resource' => $resource,
+                'id' => $id,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            throw new Exception(
+                "Failed to fetch {$resource} view: " . $response->body(),
+                $response->status()
+            );
+        }
+
+        Log::info("{$resource} view fetched successfully", [
+            'resource' => $resource,
+            'id' => $id
+        ]);
+
+        return $response->json();
+    }
+
+    /**
+     * Generic create operation - Create a new resource
+     *
+     * @param string $resource Resource name (e.g., 'project', 'user')
+     * @param array $data Resource data
+     * @return array Created resource data
+     * @throws Exception
+     */
+    public function create(string $resource, array $data): array
+    {
+        Log::info("Creating {$resource} via 4HSE API", [
+            'resource' => $resource,
+            'has_data' => !empty($data)
+        ]);
+
+        $response = $this->request('POST', "/v2/{$resource}/create", $data);
+
+        if (!$response->successful()) {
+            Log::error("Failed to create {$resource}", [
+                'resource' => $resource,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            throw new Exception(
+                "Failed to create {$resource}: " . $response->body(),
+                $response->status()
+            );
+        }
+
+        Log::info("{$resource} created successfully", [
+            'resource' => $resource
+        ]);
+
+        return $response->json();
+    }
+
+    /**
+     * Generic update operation - Update an existing resource
+     *
+     * @param string $resource Resource name (e.g., 'project', 'user')
+     * @param int|string $id Resource ID
+     * @param array $data Resource data to update
+     * @return array Updated resource data
+     * @throws Exception
+     */
+    public function update(string $resource, int|string $id, array $data): array
+    {
+        Log::info("Updating {$resource} via 4HSE API", [
+            'resource' => $resource,
+            'id' => $id,
+            'has_data' => !empty($data)
+        ]);
+
+        $response = $this->request('PUT', "/v2/{$resource}/update/{$id}", $data);
+
+        if (!$response->successful()) {
+            Log::error("Failed to update {$resource}", [
+                'resource' => $resource,
+                'id' => $id,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            throw new Exception(
+                "Failed to update {$resource}: " . $response->body(),
+                $response->status()
+            );
+        }
+
+        Log::info("{$resource} updated successfully", [
+            'resource' => $resource,
+            'id' => $id
+        ]);
+
+        return $response->json();
+    }
+
+    /**
+     * Generic delete operation - Delete a resource
+     *
+     * @param string $resource Resource name (e.g., 'project', 'user')
+     * @param int|string $id Resource ID
+     * @return bool Success status
+     * @throws Exception
+     */
+    public function delete(string $resource, int|string $id): bool
+    {
+        Log::info("Deleting {$resource} via 4HSE API", [
+            'resource' => $resource,
+            'id' => $id
+        ]);
+
+        $response = $this->request('DELETE', "/v2/{$resource}/delete/{$id}");
+
+        if (!$response->successful()) {
+            Log::error("Failed to delete {$resource}", [
+                'resource' => $resource,
+                'id' => $id,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            throw new Exception(
+                "Failed to delete {$resource}: " . $response->body(),
+                $response->status()
+            );
+        }
+
+        Log::info("{$resource} deleted successfully", [
+            'resource' => $resource,
+            'id' => $id
+        ]);
+
+        return true;
     }
 
     /**
