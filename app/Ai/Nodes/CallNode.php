@@ -5,12 +5,15 @@ namespace App\Ai\Nodes;
 use App\Ai\Agents\AdvisorAgent;
 use App\Ai\Agents\AssistantAgent;
 use App\Ai\Agents\ConsultantAgent;
+use App\Ai\Agents\FallbackAgent;
 use App\Ai\Agents\GuideAgent;
+use App\Ai\Agents\RouterAgent;
 use App\Ai\Events\ProgressEvent;
 use App\Ai\Events\SelectedAgentEvent;
 use App\Ai\Events\GenerationProgressEvent;
 use Exception;
 use Generator;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Log;
 use NeuronAI\Chat\Messages\ToolCallMessage;
 use NeuronAI\Chat\Messages\ToolCallResultMessage;
@@ -54,7 +57,7 @@ class CallNode extends Node
                 GuideAgent::$name => GuideAgent::make(),
                 ConsultantAgent::$name => ConsultantAgent::make(),
                 AssistantAgent::$name => new AssistantAgent($bearerToken),
-                default => throw new Exception("Unknown agent: $agentName"),
+                default => FallbackAgent::make(),
             };
 
             Log::debug('Agent instance created', ['agent' => $agentName]);
