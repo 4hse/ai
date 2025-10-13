@@ -3,6 +3,7 @@
 namespace App\Ai\Mcp\Tools;
 
 use App\Services\FourHseApiClient;
+use App\Ai\Mcp\Tools\Utils\WorkGroupTypeMapper;
 use PhpMcp\Server\Attributes\McpTool;
 use PhpMcp\Server\Attributes\Schema;
 use Throwable;
@@ -10,9 +11,9 @@ use Throwable;
 /**
  * Tool for listing 4HSE work group entities.
  * Work groups in 4HSE can represent three different organizational concepts:
- * - Homogeneous Groups: groups of similar workers/roles
- * - Work Phase: stages or phases in a work process
- * - Job Role: specific positions or task assignments
+ * - Homogeneous Groups: groups of similar workers/roles (HGROUP)
+ * - Work Phase: stages or phases in a work process (WORK_PLACE)
+ * - Job Role: specific positions or task assignments (JOB)
  */
 class WorkGroupEntityListTool
 {
@@ -28,7 +29,7 @@ class WorkGroupEntityListTool
      * @param string|null $filterEntityType Filter by entity type
      * @param string|null $filterWorkGroupCode Filter by work group code
      * @param string|null $filterWorkGroupName Filter by work group name
-     * @param string|null $filterWorkGroupType Filter by work group type - can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)
+     * @param string|null $filterWorkGroupType Filter by work group type - accepts Italian or English terms that will be mapped to API enum values: 'Gruppo Omogeneo'/'Homogeneous Group' → HGROUP, 'Fase di Lavoro'/'Work Phase' → WORK_PLACE, 'Mansione'/'Job' → JOB
      * @param string|null $filterEntityName Filter by entity name
      * @param string|null $filterEntityCode Filter by entity code
      * @param string|null $filterOfficeName Filter by office name
@@ -94,7 +95,7 @@ class WorkGroupEntityListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by work group type. Can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)",
+                description: WorkGroupTypeMapper::SCHEMA_DESCRIPTION,
             ),
         ]
         ?string $filterWorkGroupType = null,
@@ -219,7 +220,19 @@ class WorkGroupEntityListTool
                 $filter["work_group_name"] = $filterWorkGroupName;
             }
             if ($filterWorkGroupType !== null) {
-                $filter["work_group_type"] = $filterWorkGroupType;
+                // Map work group type to API enum value
+                $mappedWorkGroupType = WorkGroupTypeMapper::mapWorkGroupType(
+                    $filterWorkGroupType,
+                );
+                if (!$mappedWorkGroupType) {
+                    return [
+                        "error" => "Invalid work group type",
+                        "message" => WorkGroupTypeMapper::getInvalidTypeErrorMessage(
+                            $filterWorkGroupType,
+                        ),
+                    ];
+                }
+                $filter["work_group_type"] = $mappedWorkGroupType;
             }
             if ($filterEntityName !== null) {
                 $filter["entity_name"] = $filterEntityName;

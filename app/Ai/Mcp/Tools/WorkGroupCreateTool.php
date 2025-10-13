@@ -3,6 +3,7 @@
 namespace App\Ai\Mcp\Tools;
 
 use App\Services\FourHseApiClient;
+use App\Ai\Mcp\Tools\Utils\WorkGroupTypeMapper;
 use PhpMcp\Server\Attributes\McpTool;
 use PhpMcp\Server\Attributes\Schema;
 use Throwable;
@@ -10,9 +11,9 @@ use Throwable;
 /**
  * Tool for creating a new 4HSE work group.
  * Work groups in 4HSE can represent three different organizational concepts:
- * - Homogeneous Groups: groups of similar workers/roles
- * - Work Phase: stages or phases in a work process
- * - Job Role: specific positions or task assignments
+ * - Homogeneous Groups: groups of similar workers/roles (HGROUP)
+ * - Work Phase: stages or phases in a work process (WORK_PLACE)
+ * - Job Role: specific positions or task assignments (JOB)
  */
 class WorkGroupCreateTool
 {
@@ -24,7 +25,7 @@ class WorkGroupCreateTool
      *
      * @param string $name Work group name
      * @param string $officeId Office ID (UUID)
-     * @param string $workGroupType Work group type - can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)
+     * @param string $workGroupType Work group type - accepts Italian or English terms that will be mapped to API enum values: 'Gruppo Omogeneo'/'Homogeneous Group' → HGROUP, 'Fase di Lavoro'/'Work Phase' → WORK_PLACE, 'Mansione'/'Job' → JOB
      * @param string|null $code Work group code
      * @param string|null $description Work group description
      * @return array Created work group details
@@ -52,7 +53,7 @@ class WorkGroupCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Work group type (required). Can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)",
+                description: WorkGroupTypeMapper::SCHEMA_DESCRIPTION,
             ),
         ]
         string $workGroupType,
@@ -84,11 +85,24 @@ class WorkGroupCreateTool
             // Build API client with user's OAuth2 token
             $client = new FourHseApiClient($bearerToken);
 
+            // Map work group type to API enum value
+            $mappedWorkGroupType = WorkGroupTypeMapper::mapWorkGroupType(
+                $workGroupType,
+            );
+            if (!$mappedWorkGroupType) {
+                return [
+                    "error" => "Invalid work group type",
+                    "message" => WorkGroupTypeMapper::getInvalidTypeErrorMessage(
+                        $workGroupType,
+                    ),
+                ];
+            }
+
             // Build work group data
             $workGroupData = [
                 "name" => $name,
                 "office_id" => $officeId,
-                "work_group_type" => $workGroupType,
+                "work_group_type" => $mappedWorkGroupType,
             ];
 
             // Add optional fields if provided

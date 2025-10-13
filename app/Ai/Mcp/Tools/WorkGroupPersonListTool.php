@@ -3,6 +3,7 @@
 namespace App\Ai\Mcp\Tools;
 
 use App\Services\FourHseApiClient;
+use App\Ai\Mcp\Tools\Utils\WorkGroupTypeMapper;
 use PhpMcp\Server\Attributes\McpTool;
 use PhpMcp\Server\Attributes\Schema;
 use Throwable;
@@ -21,7 +22,7 @@ class WorkGroupPersonListTool
      * @param string|null $filterPersonOfficeId Filter by person office ID
      * @param string|null $filterWorkGroupCode Filter by work group code
      * @param string|null $filterWorkGroupName Filter by work group name
-     * @param string|null $filterWorkGroupType Filter by work group type
+     * @param string|null $filterWorkGroupType Filter by work group type - accepts Italian or English terms that will be mapped to API enum values: 'Gruppo Omogeneo'/'Homogeneous Group' → HGROUP, 'Fase di Lavoro'/'Work Phase' → WORK_PLACE, 'Mansione'/'Job' → JOB
      * @param string|null $filterPersonId Filter by person ID
      * @param string|null $filterPersonCode Filter by person code
      * @param string|null $filterPersonFirstName Filter by person first name
@@ -82,7 +83,10 @@ class WorkGroupPersonListTool
         ?string $filterWorkGroupName = null,
 
         #[
-            Schema(type: "string", description: "Filter by work group type"),
+            Schema(
+                type: "string",
+                description: WorkGroupTypeMapper::SCHEMA_DESCRIPTION,
+            ),
         ]
         ?string $filterWorkGroupType = null,
 
@@ -248,7 +252,19 @@ class WorkGroupPersonListTool
                 $filter["work_group_name"] = $filterWorkGroupName;
             }
             if ($filterWorkGroupType !== null) {
-                $filter["work_group_type"] = $filterWorkGroupType;
+                // Map work group type to API enum value
+                $mappedWorkGroupType = WorkGroupTypeMapper::mapWorkGroupType(
+                    $filterWorkGroupType,
+                );
+                if (!$mappedWorkGroupType) {
+                    return [
+                        "error" => "Invalid work group type",
+                        "message" => WorkGroupTypeMapper::getInvalidTypeErrorMessage(
+                            $filterWorkGroupType,
+                        ),
+                    ];
+                }
+                $filter["work_group_type"] = $mappedWorkGroupType;
             }
             if ($filterPersonId !== null) {
                 $filter["person_id"] = $filterPersonId;
