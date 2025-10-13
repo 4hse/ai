@@ -8,19 +8,25 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE work groups
+ * Tool for listing 4HSE work groups.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupListTool
 {
     /**
      * List 4HSE work groups with optional filters.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterWorkGroupId Filter by work group ID
      * @param string|null $filterCode Filter by work group code
      * @param string|null $filterName Filter by work group name
      * @param string|null $filterOfficeId Filter by office ID
-     * @param string|null $filterWorkGroupType Filter by work group type
+     * @param string|null $filterWorkGroupType Filter by work group type - can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)
      * @param string|null $filterProjectId Filter by project ID
      * @param string|null $filterProjectName Filter by project name
      * @param string|null $filterProjectType Filter by project type
@@ -34,7 +40,7 @@ class WorkGroupListTool
     #[
         McpTool(
             name: "list_4hse_work_groups",
-            description: "List work groups and teams in 4HSE. Use this to find work groups by name, code, office, project, type. Filter by work group name, code, office, project, type. Requires OAuth2 authentication.",
+            description: "List work groups and teams in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Use this to find work groups by name, code, office, project, type. Filter by work group name, code, office, project, type. Requires OAuth2 authentication.",
         ),
     ]
     public function listWorkGroups(
@@ -65,7 +71,10 @@ class WorkGroupListTool
         ?string $filterOfficeId = null,
 
         #[
-            Schema(type: "string", description: "Filter by work group type"),
+            Schema(
+                type: "string",
+                description: "Filter by work group type. Can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)",
+            ),
         ]
         ?string $filterWorkGroupType = null,
 

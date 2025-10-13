@@ -8,12 +8,18 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for deleting a 4HSE work group entity
+ * Tool for deleting a 4HSE work group entity.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupEntityDeleteTool
 {
     /**
      * Delete a work group entity from 4HSE.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string $id Work group entity ID (UUID)
@@ -23,7 +29,7 @@ class WorkGroupEntityDeleteTool
     #[
         McpTool(
             name: "delete_4hse_work_group_entity",
-            description: "Deletes a work group entity association in 4HSE. If force=false and the work group entity has related entities, returns a list of connected entities that would be deleted. If force=true, deletes the work group entity and all related entities. Requires OAuth2 authentication.",
+            description: "Deletes a work group entity association in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. If force=false and the work group entity has related entities, returns a list of connected entities that would be deleted. If force=true, deletes the work group entity and all related entities. Requires OAuth2 authentication.",
         ),
     ]
     public function deleteWorkGroupEntity(

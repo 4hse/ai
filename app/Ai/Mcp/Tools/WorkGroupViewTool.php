@@ -8,12 +8,18 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for viewing a single 4HSE work group
+ * Tool for viewing a single 4HSE work group.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupViewTool
 {
     /**
      * Get a single work group by ID.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string $id Work group ID (UUID)
@@ -22,7 +28,7 @@ class WorkGroupViewTool
     #[
         McpTool(
             name: "view_4hse_work_group",
-            description: "Retrieves a single 4HSE work group by ID. View complete work group details including name, code, description, office, project, type. Requires OAuth2 authentication.",
+            description: "Retrieves a single 4HSE work group by ID. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. View complete work group details including name, code, description, office, project, type. Requires OAuth2 authentication.",
         ),
     ]
     public function viewWorkGroup(

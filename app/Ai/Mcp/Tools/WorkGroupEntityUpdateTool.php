@@ -8,12 +8,18 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE work group entity
+ * Tool for updating an existing 4HSE work group entity.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupEntityUpdateTool
 {
     /**
      * Update an existing work group entity in 4HSE.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string $id Work group entity ID (UUID)
@@ -28,7 +34,7 @@ class WorkGroupEntityUpdateTool
     #[
         McpTool(
             name: "update_4hse_work_group_entity",
-            description: "Updates an existing work group entity association in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing work group entity association in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Requires OAuth2 authentication.",
         ),
     ]
     public function updateWorkGroupEntity(

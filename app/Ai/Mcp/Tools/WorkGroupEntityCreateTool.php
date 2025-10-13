@@ -8,12 +8,18 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for creating a new 4HSE work group entity
+ * Tool for creating a new 4HSE work group entity.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupEntityCreateTool
 {
     /**
      * Create a new work group entity in 4HSE.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string $workGroupId Work group ID (UUID)
@@ -27,7 +33,7 @@ class WorkGroupEntityCreateTool
     #[
         McpTool(
             name: "create_4hse_work_group_entity",
-            description: "Creates a new work group entity association in 4HSE. Associates a work group with an entity (equipment, work environment, or substance). Requires OAuth2 authentication.",
+            description: "Creates a new work group entity association in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Associates a work group with an entity (equipment, work environment, or substance). Requires OAuth2 authentication.",
         ),
     ]
     public function createWorkGroupEntity(

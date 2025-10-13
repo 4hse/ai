@@ -8,18 +8,24 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE work group
+ * Tool for updating an existing 4HSE work group.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupUpdateTool
 {
     /**
      * Update an existing work group in 4HSE.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string $id Work group ID (UUID)
      * @param string|null $name Work group name
      * @param string|null $officeId Office ID (UUID)
-     * @param string|null $workGroupType Work group type
+     * @param string|null $workGroupType Work group type - can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)
      * @param string|null $code Work group code
      * @param string|null $description Work group description
      * @return array Updated work group details
@@ -27,7 +33,7 @@ class WorkGroupUpdateTool
     #[
         McpTool(
             name: "update_4hse_work_group",
-            description: "Updates an existing work group in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing work group in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Requires OAuth2 authentication.",
         ),
     ]
     public function updateWorkGroup(
@@ -50,7 +56,10 @@ class WorkGroupUpdateTool
         ?string $officeId = null,
 
         #[
-            Schema(type: "string", description: "Work group type"),
+            Schema(
+                type: "string",
+                description: "Work group type. Can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)",
+            ),
         ]
         ?string $workGroupType = null,
 

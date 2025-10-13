@@ -8,12 +8,18 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE work group entities
+ * Tool for listing 4HSE work group entities.
+ * Work groups in 4HSE can represent three different organizational concepts:
+ * - Homogeneous Groups: groups of similar workers/roles
+ * - Work Phase: stages or phases in a work process
+ * - Job Role: specific positions or task assignments
  */
 class WorkGroupEntityListTool
 {
     /**
      * List 4HSE work group entities with optional filters.
+     * Work groups can represent different organizational concepts: homogeneous groups of similar workers,
+     * work phases in a process, or specific job roles/positions.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterWorkGroupEntityId Filter by work group entity ID
@@ -22,7 +28,7 @@ class WorkGroupEntityListTool
      * @param string|null $filterEntityType Filter by entity type
      * @param string|null $filterWorkGroupCode Filter by work group code
      * @param string|null $filterWorkGroupName Filter by work group name
-     * @param string|null $filterWorkGroupType Filter by work group type
+     * @param string|null $filterWorkGroupType Filter by work group type - can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)
      * @param string|null $filterEntityName Filter by entity name
      * @param string|null $filterEntityCode Filter by entity code
      * @param string|null $filterOfficeName Filter by office name
@@ -38,7 +44,7 @@ class WorkGroupEntityListTool
     #[
         McpTool(
             name: "list_4hse_work_group_entities",
-            description: "List work group entity associations in 4HSE. Use this to find associations between work groups and entities (equipment, work environments, substances). Filter by work group, entity type, office, project. Requires OAuth2 authentication.",
+            description: "List work group entity associations in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Use this to find associations between work groups and entities (equipment, work environments, substances). Filter by work group, entity type, office, project. Requires OAuth2 authentication.",
         ),
     ]
     public function listWorkGroupEntities(
@@ -86,7 +92,10 @@ class WorkGroupEntityListTool
         ?string $filterWorkGroupName = null,
 
         #[
-            Schema(type: "string", description: "Filter by work group type"),
+            Schema(
+                type: "string",
+                description: "Filter by work group type. Can be one of three types: 'Homogeneous Groups' (groups of similar workers/roles), 'Work Phase' (stage or phase in a work process), or 'Job Role' (specific position or task assignment)",
+            ),
         ]
         ?string $filterWorkGroupType = null,
 
