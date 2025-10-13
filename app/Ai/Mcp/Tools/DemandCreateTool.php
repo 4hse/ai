@@ -23,51 +23,73 @@ class DemandCreateTool
      * @param string|null $data Additional data in JSON format
      * @return array Created demand details
      */
-    #[McpTool(
-        name: 'create_4hse_demand',
-        description: 'Creates a new demand in 4HSE. Links an action with a resource to create a requirement or request. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "create_4hse_demand",
+            description: "Creates a new demand in 4HSE. Links an action with a resource to create a requirement or request. Requires OAuth2 authentication.",
+        ),
+    ]
     public function createDemand(
-        #[Schema(
-            type: 'string',
-            description: 'Action ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action ID in UUID format (required)",
+            ),
+        ]
         string $actionId,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action type (required)',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action type (required)",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         string $actionType,
 
-        #[Schema(
-            type: 'string',
-            description: 'Resource ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Resource ID in UUID format (required)",
+            ),
+        ]
         string $resourceId,
 
-        #[Schema(
-            type: 'string',
-            description: 'Resource type (required)',
-            enum: ['MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Resource type (required)",
+                enum: [
+                    "MATERIAL_ITEM",
+                    "ROLE",
+                    "WORK_GROUP",
+                    "WORK_ENVIRONMENT",
+                    "SUBSTANCE",
+                    "EQUIPMENT",
+                ],
+            ),
+        ]
         string $resourceType,
 
-        #[Schema(
-            type: 'string',
-            description: 'Additional data in JSON format'
-        )]
-        ?string $data = null
+        #[
+            Schema(
+                type: "string",
+                description: "Additional data in JSON format",
+            ),
+        ]
+        ?string $data = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -76,30 +98,29 @@ class DemandCreateTool
 
             // Build demand data
             $demandData = [
-                'action_id' => $actionId,
-                'action_type' => $actionType,
-                'resource_id' => $resourceId,
-                'resource_type' => $resourceType,
+                "action_id" => $actionId,
+                "action_type" => $actionType,
+                "resource_id" => $resourceId,
+                "resource_type" => $resourceType,
             ];
 
             // Add optional fields if provided
             if ($data !== null) {
-                $demandData['data'] = $data;
+                $demandData["data"] = $data;
             }
 
             // Create demand via 4HSE API
-            $demand = $client->create('demand', $demandData);
+            $demand = $client->create("demand", $demandData);
 
             return [
-                'success' => true,
-                'demand' => $demand,
+                "success" => true,
+                "demand" => $demand,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to create demand',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to create demand",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

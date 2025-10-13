@@ -32,105 +32,102 @@ class ActionUpdateTool
      * @param string|null $tenantId Tenant ID (UUID)
      * @return array Updated action details
      */
-    #[McpTool(
-        name: 'update_4hse_action',
-        description: 'Updates an existing action in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_action",
+            description: "Updates an existing action in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateAction(
-        #[Schema(
-            type: 'integer',
-            description: 'Action ID (required)'
-        )]
-        int $id,
+        #[Schema(type: "integer", description: "Action ID (required)")] int $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action type',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action type",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         ?string $actionType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action name'
-        )]
+        #[
+            Schema(type: "string", description: "Action name"),
+        ]
         ?string $name = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action code'
-        )]
+        #[
+            Schema(type: "string", description: "Action code"),
+        ]
         ?string $code = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action description'
-        )]
+        #[
+            Schema(type: "string", description: "Action description"),
+        ]
         ?string $description = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Validity unit',
-            enum: ['YEAR', 'MONTH', 'DAY']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Validity unit",
+                enum: ["YEAR", "MONTH", "DAY"],
+            ),
+        ]
         ?string $validityUnit = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Validity period'
-        )]
+        #[
+            Schema(type: "integer", description: "Validity period"),
+        ]
         ?int $validity = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Expiration interval'
-        )]
+        #[
+            Schema(type: "integer", description: "Expiration interval"),
+        ]
         ?int $expireInterval = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Manager (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Manager (JSON format)"),
+        ]
         ?string $manager = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Assignee (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Assignee (JSON format)"),
+        ]
         ?string $assignee = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Watcher (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Watcher (JSON format)"),
+        ]
         ?string $watcher = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Additional data (JSON format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Additional data (JSON format)",
+            ),
+        ]
         ?string $data = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Subtenant ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Subtenant ID in UUID format"),
+        ]
         ?string $subtenantId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Tenant ID in UUID format'
-        )]
-        ?string $tenantId = null
+        #[
+            Schema(type: "string", description: "Tenant ID in UUID format"),
+        ]
+        ?string $tenantId = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -141,58 +138,57 @@ class ActionUpdateTool
             $actionData = [];
 
             if ($actionType !== null) {
-                $actionData['action_type'] = $actionType;
+                $actionData["action_type"] = $actionType;
             }
             if ($name !== null) {
-                $actionData['name'] = $name;
+                $actionData["name"] = $name;
             }
             if ($code !== null) {
-                $actionData['code'] = $code;
+                $actionData["code"] = $code;
             }
             if ($description !== null) {
-                $actionData['description'] = $description;
+                $actionData["description"] = $description;
             }
             if ($validityUnit !== null) {
-                $actionData['validity_unit'] = $validityUnit;
+                $actionData["validity_unit"] = $validityUnit;
             }
             if ($validity !== null) {
-                $actionData['validity'] = $validity;
+                $actionData["validity"] = $validity;
             }
             if ($expireInterval !== null) {
-                $actionData['expire_interval'] = $expireInterval;
+                $actionData["expire_interval"] = $expireInterval;
             }
             if ($manager !== null) {
-                $actionData['manager'] = $manager;
+                $actionData["manager"] = $manager;
             }
             if ($assignee !== null) {
-                $actionData['assignee'] = $assignee;
+                $actionData["assignee"] = $assignee;
             }
             if ($watcher !== null) {
-                $actionData['watcher'] = $watcher;
+                $actionData["watcher"] = $watcher;
             }
             if ($data !== null) {
-                $actionData['data'] = $data;
+                $actionData["data"] = $data;
             }
             if ($subtenantId !== null) {
-                $actionData['subtenant_id'] = $subtenantId;
+                $actionData["subtenant_id"] = $subtenantId;
             }
             if ($tenantId !== null) {
-                $actionData['tenant_id'] = $tenantId;
+                $actionData["tenant_id"] = $tenantId;
             }
 
             // Update action via 4HSE API
-            $action = $client->update('action', $id, $actionData);
+            $action = $client->update("action", $id, $actionData);
 
             return [
-                'success' => true,
-                'action' => $action,
+                "success" => true,
+                "action" => $action,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update action',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update action",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

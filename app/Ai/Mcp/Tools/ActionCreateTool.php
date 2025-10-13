@@ -31,99 +31,106 @@ class ActionCreateTool
      * @param string|null $data Additional data (JSON format)
      * @return array Created action details
      */
-    #[McpTool(
-        name: 'create_4hse_action',
-        description: 'Creates a new action in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "create_4hse_action",
+            description: "Creates a new action in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function createAction(
-        #[Schema(
-            type: 'string',
-            description: 'Action type (required)',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action type (required)",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         string $actionType,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action name (required)'
-        )]
+        #[
+            Schema(type: "string", description: "Action name (required)"),
+        ]
         string $name,
 
-        #[Schema(
-            type: 'string',
-            description: 'Subtenant ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Subtenant ID in UUID format (required)",
+            ),
+        ]
         string $subtenantId,
 
-        #[Schema(
-            type: 'string',
-            description: 'Tenant ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Tenant ID in UUID format (required)",
+            ),
+        ]
         string $tenantId,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action code'
-        )]
+        #[
+            Schema(type: "string", description: "Action code"),
+        ]
         ?string $code = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action description'
-        )]
+        #[
+            Schema(type: "string", description: "Action description"),
+        ]
         ?string $description = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Validity unit',
-            enum: ['YEAR', 'MONTH', 'DAY']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Validity unit",
+                enum: ["YEAR", "MONTH", "DAY"],
+            ),
+        ]
         ?string $validityUnit = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Validity period'
-        )]
+        #[
+            Schema(type: "integer", description: "Validity period"),
+        ]
         ?int $validity = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Expiration interval'
-        )]
+        #[
+            Schema(type: "integer", description: "Expiration interval"),
+        ]
         ?int $expireInterval = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Manager (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Manager (JSON format)"),
+        ]
         ?string $manager = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Assignee (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Assignee (JSON format)"),
+        ]
         ?string $assignee = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Watcher (JSON format)'
-        )]
+        #[
+            Schema(type: "string", description: "Watcher (JSON format)"),
+        ]
         ?string $watcher = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Additional data (JSON format)'
-        )]
-        ?string $data = null
+        #[
+            Schema(
+                type: "string",
+                description: "Additional data (JSON format)",
+            ),
+        ]
+        ?string $data = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -132,54 +139,53 @@ class ActionCreateTool
 
             // Build action data
             $actionData = [
-                'action_type' => $actionType,
-                'name' => $name,
-                'subtenant_id' => $subtenantId,
-                'tenant_id' => $tenantId,
+                "action_type" => $actionType,
+                "name" => $name,
+                "subtenant_id" => $subtenantId,
+                "tenant_id" => $tenantId,
             ];
 
             // Add optional fields if provided
             if ($code !== null) {
-                $actionData['code'] = $code;
+                $actionData["code"] = $code;
             }
             if ($description !== null) {
-                $actionData['description'] = $description;
+                $actionData["description"] = $description;
             }
             if ($validityUnit !== null) {
-                $actionData['validity_unit'] = $validityUnit;
+                $actionData["validity_unit"] = $validityUnit;
             }
             if ($validity !== null) {
-                $actionData['validity'] = $validity;
+                $actionData["validity"] = $validity;
             }
             if ($expireInterval !== null) {
-                $actionData['expire_interval'] = $expireInterval;
+                $actionData["expire_interval"] = $expireInterval;
             }
             if ($manager !== null) {
-                $actionData['manager'] = $manager;
+                $actionData["manager"] = $manager;
             }
             if ($assignee !== null) {
-                $actionData['assignee'] = $assignee;
+                $actionData["assignee"] = $assignee;
             }
             if ($watcher !== null) {
-                $actionData['watcher'] = $watcher;
+                $actionData["watcher"] = $watcher;
             }
             if ($data !== null) {
-                $actionData['data'] = $data;
+                $actionData["data"] = $data;
             }
 
             // Create action via 4HSE API
-            $action = $client->create('action', $actionData);
+            $action = $client->create("action", $actionData);
 
             return [
-                'success' => true,
-                'action' => $action,
+                "success" => true,
+                "action" => $action,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to create action',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to create action",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

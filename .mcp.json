@@ -1,25 +1,11 @@
 {
-  "mcpServers": {
-    "4hse-mcp-local-stdio": {
-      "command": "docker",
-      "args": [
-        "exec",
-        "-i",
-        "4hse-ai",
-        "php",
-        "artisan",
-        "mcp:serve"
-      ],
-      "env": {
-        "MCP_MODE": "dev"
-      }
-    },
-    "4hse-mcp-local-http": {
-      "type": "http",
-      "url": "http://ai.4hse.local/mcp",
-      "headers": {
-        "Authorization": "Bearer ${MCP_TOKEN}"
-      }
+    "mcpServers": {
+        "4hse-mcp-local-http": {
+            "type": "http",
+            "url": "http://ai.4hse.local/mcp",
+            "headers": {
+                "Authorization": "Bearer ${MCP_TOKEN}"
+            }
+        }
     }
-  }
 }

@@ -36,131 +36,135 @@ class OfficeListTool
      * @param bool $history Include historicized items (default: false)
      * @return array List of offices with pagination
      */
-    #[McpTool(
-        name: 'list_4hse_offices',
-        description: 'List company offices and locations in 4HSE. Use this to find offices by name, code, address, project, type. Filter by office name, code, street, locality, region, country, tax code, VAT, project name, project type. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "list_4hse_offices",
+            description: "List company offices and locations in 4HSE. Use this to find offices by name, code, address, project, type. Filter by office name, code, street, locality, region, country, tax code, VAT, project name, project type. Requires OAuth2 authentication.",
+        ),
+    ]
     public function listOffices(
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by office ID (UUID format)",
+            ),
+        ]
         ?string $filterOfficeId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by project ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by project ID (UUID format)",
+            ),
+        ]
         ?string $filterProjectId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by office name"),
+        ]
         ?string $filterName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by street address'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by street address"),
+        ]
         ?string $filterStreet = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by postal code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by postal code"),
+        ]
         ?string $filterPostalCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by region'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by region"),
+        ]
         ?string $filterRegion = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by locality/city'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by locality/city"),
+        ]
         ?string $filterLocality = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by country'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by country"),
+        ]
         ?string $filterCountry = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by tax code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by tax code"),
+        ]
         ?string $filterTaxCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by VAT number'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by VAT number"),
+        ]
         ?string $filterVat = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office type ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by office type ID (UUID format)",
+            ),
+        ]
         ?string $filterOfficeTypeId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by office code"),
+        ]
         ?string $filterCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by project name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by project name"),
+        ]
         ?string $filterProjectName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by project type'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by project type"),
+        ]
         ?string $filterProjectType = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Number of results per page',
-            minimum: 1,
-            maximum: 100
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Number of results per page",
+                minimum: 1,
+                maximum: 100,
+            ),
+        ]
         int $perPage = 20,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Page number',
-            minimum: 1
-        )]
+        #[
+            Schema(type: "integer", description: "Page number", minimum: 1),
+        ]
         int $page = 1,
 
-        #[Schema(
-            type: 'string',
-            description: 'Sort by field',
-            enum: ['name', '-name', 'code', '-code']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Sort by field",
+                enum: ["name", "-name", "code", "-code"],
+            ),
+        ]
         ?string $sort = null,
 
-        #[Schema(
-            type: 'boolean',
-            description: 'Include historicized items that are not currently valid'
-        )]
-        bool $history = false
+        #[
+            Schema(
+                type: "boolean",
+                description: "Include historicized items that are not currently valid",
+            ),
+        ]
+        bool $history = false,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -169,80 +173,79 @@ class OfficeListTool
 
             // Build request parameters
             $params = [
-                'per-page' => $perPage,
-                'page' => $page,
-                'history' => $history,
+                "per-page" => $perPage,
+                "page" => $page,
+                "history" => $history,
             ];
 
             // Add filters if provided
             $filter = [];
             if ($filterOfficeId !== null) {
-                $filter['office_id'] = $filterOfficeId;
+                $filter["office_id"] = $filterOfficeId;
             }
             if ($filterProjectId !== null) {
-                $filter['project_id'] = $filterProjectId;
+                $filter["project_id"] = $filterProjectId;
             }
             if ($filterName !== null) {
-                $filter['name'] = $filterName;
+                $filter["name"] = $filterName;
             }
             if ($filterStreet !== null) {
-                $filter['street'] = $filterStreet;
+                $filter["street"] = $filterStreet;
             }
             if ($filterPostalCode !== null) {
-                $filter['postal_code'] = $filterPostalCode;
+                $filter["postal_code"] = $filterPostalCode;
             }
             if ($filterRegion !== null) {
-                $filter['region'] = $filterRegion;
+                $filter["region"] = $filterRegion;
             }
             if ($filterLocality !== null) {
-                $filter['locality'] = $filterLocality;
+                $filter["locality"] = $filterLocality;
             }
             if ($filterCountry !== null) {
-                $filter['country'] = $filterCountry;
+                $filter["country"] = $filterCountry;
             }
             if ($filterTaxCode !== null) {
-                $filter['tax_code'] = $filterTaxCode;
+                $filter["tax_code"] = $filterTaxCode;
             }
             if ($filterVat !== null) {
-                $filter['vat'] = $filterVat;
+                $filter["vat"] = $filterVat;
             }
             if ($filterOfficeTypeId !== null) {
-                $filter['office_type_id'] = $filterOfficeTypeId;
+                $filter["office_type_id"] = $filterOfficeTypeId;
             }
             if ($filterCode !== null) {
-                $filter['code'] = $filterCode;
+                $filter["code"] = $filterCode;
             }
             if ($filterProjectName !== null) {
-                $filter['project_name'] = $filterProjectName;
+                $filter["project_name"] = $filterProjectName;
             }
             if ($filterProjectType !== null) {
-                $filter['project_type'] = $filterProjectType;
+                $filter["project_type"] = $filterProjectType;
             }
 
             if (!empty($filter)) {
-                $params['filter'] = $filter;
+                $params["filter"] = $filter;
             }
 
             // Add sort if provided
             if ($sort !== null) {
-                $params['sort'] = $sort;
+                $params["sort"] = $sort;
             }
 
             // Fetch offices from 4HSE API
-            $result = $client->index('office', $params);
+            $result = $client->index("office", $params);
 
             return [
-                'success' => true,
-                'offices' => $result['data'],
-                'pagination' => $result['pagination'],
-                'filters_applied' => $filter,
+                "success" => true,
+                "offices" => $result["data"],
+                "pagination" => $result["pagination"],
+                "filters_applied" => $filter,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve offices',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve offices",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

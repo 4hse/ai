@@ -30,24 +30,30 @@ class DocumentationSearchTool
      * @param int $limit Maximum number of results to return (default: 5)
      * @return array Search results with content and similarity score
      */
-    #[McpTool(
-        name: 'search_4hse_documentation',
-        description: 'Searches the 4HSE documentation using natural language queries with semantic vector search'
-    )]
+    #[
+        McpTool(
+            name: "search_4hse_documentation",
+            description: "Searches the 4HSE documentation using natural language queries with semantic vector search",
+        ),
+    ]
     public function searchDocumentation(
-        #[Schema(
-            type: 'string',
-            description: 'The natural language query or question about 4HSE product'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "The natural language query or question about 4HSE product",
+            ),
+        ]
         string $query,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Maximum number of results to return',
-            minimum: 1,
-            maximum: 20
-        )]
-        int $limit = 5
+        #[
+            Schema(
+                type: "integer",
+                description: "Maximum number of results to return",
+                minimum: 1,
+                maximum: 20,
+            ),
+        ]
+        int $limit = 5,
     ): array {
         try {
             // Create the message for Neuron AI
@@ -60,28 +66,26 @@ class DocumentationSearchTool
             $documents = array_slice($documents, 0, $limit);
 
             // Convert Document objects to array for MCP
-            $results = array_map(function($doc) {
+            $results = array_map(function ($doc) {
                 return [
-                    'id' => $doc->id,
-                    'source_type' => $doc->sourceType,
-                    'source_name' => $doc->sourceName,
-                    'content' => $doc->content,
-                    'similarity_score' => $doc->score ?? null,
+                    "id" => $doc->id,
+                    "source_type" => $doc->sourceType,
+                    "source_name" => $doc->sourceName,
+                    "content" => $doc->content,
+                    "similarity_score" => $doc->score ?? null,
                 ];
             }, $documents);
 
             return [
-                'query' => $query,
-                'results_count' => count($results),
-                'results' => $results
+                "query" => $query,
+                "results_count" => count($results),
+                "results" => $results,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve documents',
-                'message' => $e->getMessage()
+                "error" => "Failed to retrieve documents",
+                "message" => $e->getMessage(),
             ];
         }
     }
 }
-

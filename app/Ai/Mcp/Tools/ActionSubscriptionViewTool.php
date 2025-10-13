@@ -19,25 +19,32 @@ class ActionSubscriptionViewTool
      * @param string $id Action subscription ID (UUID)
      * @return array Action subscription details
      */
-    #[McpTool(
-        name: 'view_4hse_action_subscription',
-        description: 'Retrieves a single 4HSE action subscription by ID. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_action_subscription",
+            description: "Retrieves a single 4HSE action subscription by ID. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewActionSubscription(
-        #[Schema(
-            type: 'string',
-            description: 'Action subscription ID (UUID format)'
-        )]
-        string $id
+        #[
+            Schema(
+                type: "string",
+                description: "Action subscription ID (UUID format)",
+            ),
+        ]
+        string $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +52,17 @@ class ActionSubscriptionViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch action subscription from 4HSE API
-            $actionSubscription = $client->view('action-subscription', $id);
+            $actionSubscription = $client->view("action-subscription", $id);
 
             return [
-                'success' => true,
-                'action_subscription' => $actionSubscription,
+                "success" => true,
+                "action_subscription" => $actionSubscription,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve action subscription',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve action subscription",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

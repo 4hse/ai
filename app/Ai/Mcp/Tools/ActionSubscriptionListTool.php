@@ -37,140 +37,189 @@ class ActionSubscriptionListTool
      * @param bool $history Include historicized items (default: false)
      * @return array List of action subscriptions with pagination
      */
-    #[McpTool(
-        name: 'list_4hse_action_subscriptions',
-        description: 'List preventive actions assigned to resources (people, equipment, materials, etc.). Use this when user asks for "actions of [person/resource name]", "expired actions", "valid actions", "new actions", or to find which actions are subscribed/assigned to specific resources. Filter by subscriber name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), status: NEW (new/pending actions), VALID (valid/active actions), EXPIRED (expired/overdue/scadute actions). Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "list_4hse_action_subscriptions",
+            description: 'List preventive actions assigned to resources (people, equipment, materials, etc.). Use this when user asks for "actions of [person/resource name]", "expired actions", "valid actions", "new actions", or to find which actions are subscribed/assigned to specific resources. Filter by subscriber name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), status: NEW (new/pending actions), VALID (valid/active actions), EXPIRED (expired/overdue/scadute actions). Requires OAuth2 authentication.',
+        ),
+    ]
     public function listActionSubscriptions(
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action subscription ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by action subscription ID (UUID format)",
+            ),
+        ]
         ?string $filterActionSubscriptionId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by action ID (UUID format)",
+            ),
+        ]
         ?string $filterActionId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action type',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by action type",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         ?string $filterActionType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by action code"),
+        ]
         ?string $filterActionCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by action name"),
+        ]
         ?string $filterActionName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by subscriber ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by subscriber ID (UUID format)",
+            ),
+        ]
         ?string $filterSubscriberId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by subscriber type',
-            enum: ['PERSON', 'MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by subscriber type",
+                enum: [
+                    "PERSON",
+                    "MATERIAL_ITEM",
+                    "ROLE",
+                    "WORK_GROUP",
+                    "WORK_ENVIRONMENT",
+                    "SUBSTANCE",
+                    "EQUIPMENT",
+                ],
+            ),
+        ]
         ?string $filterSubscriberType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by subscriber code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by subscriber code"),
+        ]
         ?string $filterSubscriberCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by subscriber name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by subscriber name"),
+        ]
         ?string $filterSubscriberName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by status',
-            enum: ['NEW', 'VALID', 'EXPIRED']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by status",
+                enum: ["NEW", "VALID", "EXPIRED"],
+            ),
+        ]
         ?string $filterStatus = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by office name"),
+        ]
         ?string $filterOfficeName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by project name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by project name"),
+        ]
         ?string $filterProjectName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by project type'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by project type"),
+        ]
         ?string $filterProjectType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by subtenant ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by subtenant ID (UUID format)",
+            ),
+        ]
         ?string $filterSubtenantId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by tenant ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by tenant ID (UUID format)",
+            ),
+        ]
         ?string $filterTenantId = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Number of results per page',
-            minimum: 1,
-            maximum: 100
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Number of results per page",
+                minimum: 1,
+                maximum: 100,
+            ),
+        ]
         int $perPage = 20,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Page number',
-            minimum: 1
-        )]
+        #[
+            Schema(type: "integer", description: "Page number", minimum: 1),
+        ]
         int $page = 1,
 
-        #[Schema(
-            type: 'string',
-            description: 'Sort by field',
-            enum: ['action_type', '-action_type', 'action_code', '-action_code', 'action_name', '-action_name', 'subscriber_type', '-subscriber_type', 'subscriber_code', '-subscriber_code', 'subscriber_name', '-subscriber_name', 'certificate_date_expire', '-certificate_date_expire', 'date_latest_session', '-date_latest_session', 'status', '-status', 'office_name', '-office_name', 'project_name', '-project_name']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Sort by field",
+                enum: [
+                    "action_type",
+                    "-action_type",
+                    "action_code",
+                    "-action_code",
+                    "action_name",
+                    "-action_name",
+                    "subscriber_type",
+                    "-subscriber_type",
+                    "subscriber_code",
+                    "-subscriber_code",
+                    "subscriber_name",
+                    "-subscriber_name",
+                    "certificate_date_expire",
+                    "-certificate_date_expire",
+                    "date_latest_session",
+                    "-date_latest_session",
+                    "status",
+                    "-status",
+                    "office_name",
+                    "-office_name",
+                    "project_name",
+                    "-project_name",
+                ],
+            ),
+        ]
         ?string $sort = null,
 
-        #[Schema(
-            type: 'boolean',
-            description: 'Include historicized items that are not currently valid'
-        )]
-        bool $history = false
+        #[
+            Schema(
+                type: "boolean",
+                description: "Include historicized items that are not currently valid",
+            ),
+        ]
+        bool $history = false,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -179,83 +228,82 @@ class ActionSubscriptionListTool
 
             // Build request parameters
             $params = [
-                'per-page' => $perPage,
-                'page' => $page,
-                'history' => $history,
+                "per-page" => $perPage,
+                "page" => $page,
+                "history" => $history,
             ];
 
             // Add filters if provided
             $filter = [];
             if ($filterActionSubscriptionId !== null) {
-                $filter['action_subscription_id'] = $filterActionSubscriptionId;
+                $filter["action_subscription_id"] = $filterActionSubscriptionId;
             }
             if ($filterActionId !== null) {
-                $filter['action_id'] = $filterActionId;
+                $filter["action_id"] = $filterActionId;
             }
             if ($filterActionType !== null) {
-                $filter['action_type'] = $filterActionType;
+                $filter["action_type"] = $filterActionType;
             }
             if ($filterActionCode !== null) {
-                $filter['action_code'] = $filterActionCode;
+                $filter["action_code"] = $filterActionCode;
             }
             if ($filterActionName !== null) {
-                $filter['action_name'] = $filterActionName;
+                $filter["action_name"] = $filterActionName;
             }
             if ($filterSubscriberId !== null) {
-                $filter['subscriber_id'] = $filterSubscriberId;
+                $filter["subscriber_id"] = $filterSubscriberId;
             }
             if ($filterSubscriberType !== null) {
-                $filter['subscriber_type'] = $filterSubscriberType;
+                $filter["subscriber_type"] = $filterSubscriberType;
             }
             if ($filterSubscriberCode !== null) {
-                $filter['subscriber_code'] = $filterSubscriberCode;
+                $filter["subscriber_code"] = $filterSubscriberCode;
             }
             if ($filterSubscriberName !== null) {
-                $filter['subscriber_name'] = $filterSubscriberName;
+                $filter["subscriber_name"] = $filterSubscriberName;
             }
             if ($filterStatus !== null) {
-                $filter['status'] = $filterStatus;
+                $filter["status"] = $filterStatus;
             }
             if ($filterOfficeName !== null) {
-                $filter['office_name'] = $filterOfficeName;
+                $filter["office_name"] = $filterOfficeName;
             }
             if ($filterProjectName !== null) {
-                $filter['project_name'] = $filterProjectName;
+                $filter["project_name"] = $filterProjectName;
             }
             if ($filterProjectType !== null) {
-                $filter['project_type'] = $filterProjectType;
+                $filter["project_type"] = $filterProjectType;
             }
             if ($filterSubtenantId !== null) {
-                $filter['subtenant_id'] = $filterSubtenantId;
+                $filter["subtenant_id"] = $filterSubtenantId;
             }
             if ($filterTenantId !== null) {
-                $filter['tenant_id'] = $filterTenantId;
+                $filter["tenant_id"] = $filterTenantId;
             }
 
             if (!empty($filter)) {
-                $params['filter'] = $filter;
+                $params["filter"] = $filter;
             }
 
             // Add sort if provided
             if ($sort !== null) {
-                $params['sort'] = $sort;
+                $params["sort"] = $sort;
             }
 
             // Fetch action subscriptions from 4HSE API
-            $result = $client->index('action-subscription', $params);
+            $result = $client->index("action-subscription", $params);
 
             return [
-                'success' => true,
-                'action_subscriptions' => $result['data'],
-                'pagination' => $result['pagination'],
-                'filters_applied' => $filter,
+                "success" => true,
+                "action_subscriptions" => $result["data"],
+                "pagination" => $result["pagination"],
+                "filters_applied" => $filter,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve action subscriptions',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve action subscriptions",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

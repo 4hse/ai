@@ -19,25 +19,32 @@ class WorkGroupEntityViewTool
      * @param string $id Work group entity ID (UUID)
      * @return array Work group entity details
      */
-    #[McpTool(
-        name: 'view_4hse_work_group_entity',
-        description: 'Retrieves a single 4HSE work group entity by ID. View complete work group entity details including association between work groups and entities (equipment, work environments, substances). Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_work_group_entity",
+            description: "Retrieves a single 4HSE work group entity by ID. View complete work group entity details including association between work groups and entities (equipment, work environments, substances). Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewWorkGroupEntity(
-        #[Schema(
-            type: 'string',
-            description: 'Work group entity ID (UUID format)'
-        )]
-        string $id
+        #[
+            Schema(
+                type: "string",
+                description: "Work group entity ID (UUID format)",
+            ),
+        ]
+        string $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +52,17 @@ class WorkGroupEntityViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch work group entity from 4HSE API
-            $workGroupEntity = $client->view('work-group-entity', $id);
+            $workGroupEntity = $client->view("work-group-entity", $id);
 
             return [
-                'success' => true,
-                'work_group_entity' => $workGroupEntity,
+                "success" => true,
+                "work_group_entity" => $workGroupEntity,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve work group entity',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve work group entity",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

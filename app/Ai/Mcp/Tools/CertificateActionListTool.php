@@ -31,102 +31,121 @@ class CertificateActionListTool
      * @param bool $history Include historicized items (default: false)
      * @return array List of certificate actions with pagination
      */
-    #[McpTool(
-        name: 'list_4hse_certificate_actions',
-        description: 'List certificate-action associations in 4HSE. Use this to find which actions are linked to certificates, filter by certificate name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource type, office. View expiration dates and inherited dates. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "list_4hse_certificate_actions",
+            description: "List certificate-action associations in 4HSE. Use this to find which actions are linked to certificates, filter by certificate name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource type, office. View expiration dates and inherited dates. Requires OAuth2 authentication.",
+        ),
+    ]
     public function listCertificateActions(
-        #[Schema(
-            type: 'string',
-            description: 'Filter by certificate action ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by certificate action ID (UUID format)",
+            ),
+        ]
         ?string $filterCertificateActionId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by certificate ID (UUID format)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by certificate ID (UUID format)",
+            ),
+        ]
         ?string $filterCertificateId = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Filter by action ID'
-        )]
+        #[
+            Schema(type: "integer", description: "Filter by action ID"),
+        ]
         ?int $filterActionId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by action name"),
+        ]
         ?string $filterActionName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action code'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by action code"),
+        ]
         ?string $filterActionCode = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action type',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by action type",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         ?string $filterActionType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by resource ID (UUID): ID of person, material, equipment, etc.'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by resource ID (UUID): ID of person, material, equipment, etc.",
+            ),
+        ]
         ?string $filterResourceId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by certificate name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by certificate name"),
+        ]
         ?string $filterCertificateName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by office name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by office name"),
+        ]
         ?string $filterOfficeName = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Number of results per page',
-            minimum: 1,
-            maximum: 100
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Number of results per page",
+                minimum: 1,
+                maximum: 100,
+            ),
+        ]
         int $perPage = 20,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Page number',
-            minimum: 1
-        )]
+        #[
+            Schema(type: "integer", description: "Page number", minimum: 1),
+        ]
         int $page = 1,
 
-        #[Schema(
-            type: 'string',
-            description: 'Sort by field',
-            enum: ['date_expire', '-date_expire', 'action_name', '-action_name', 'certificate_name', '-certificate_name']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Sort by field",
+                enum: [
+                    "date_expire",
+                    "-date_expire",
+                    "action_name",
+                    "-action_name",
+                    "certificate_name",
+                    "-certificate_name",
+                ],
+            ),
+        ]
         ?string $sort = null,
 
-        #[Schema(
-            type: 'boolean',
-            description: 'Include historicized items that are not currently valid'
-        )]
-        bool $history = false
+        #[
+            Schema(
+                type: "boolean",
+                description: "Include historicized items that are not currently valid",
+            ),
+        ]
+        bool $history = false,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -135,65 +154,64 @@ class CertificateActionListTool
 
             // Build request parameters
             $params = [
-                'per-page' => $perPage,
-                'page' => $page,
-                'history' => $history,
+                "per-page" => $perPage,
+                "page" => $page,
+                "history" => $history,
             ];
 
             // Add filters if provided
             $filter = [];
             if ($filterCertificateActionId !== null) {
-                $filter['certificate_action_id'] = $filterCertificateActionId;
+                $filter["certificate_action_id"] = $filterCertificateActionId;
             }
             if ($filterCertificateId !== null) {
-                $filter['certificate_id'] = $filterCertificateId;
+                $filter["certificate_id"] = $filterCertificateId;
             }
             if ($filterActionId !== null) {
-                $filter['action_id'] = $filterActionId;
+                $filter["action_id"] = $filterActionId;
             }
             if ($filterActionName !== null) {
-                $filter['action_name'] = $filterActionName;
+                $filter["action_name"] = $filterActionName;
             }
             if ($filterActionCode !== null) {
-                $filter['action_code'] = $filterActionCode;
+                $filter["action_code"] = $filterActionCode;
             }
             if ($filterActionType !== null) {
-                $filter['action_type'] = $filterActionType;
+                $filter["action_type"] = $filterActionType;
             }
             if ($filterResourceId !== null) {
-                $filter['resource_id'] = $filterResourceId;
+                $filter["resource_id"] = $filterResourceId;
             }
             if ($filterCertificateName !== null) {
-                $filter['certificate_name'] = $filterCertificateName;
+                $filter["certificate_name"] = $filterCertificateName;
             }
             if ($filterOfficeName !== null) {
-                $filter['office_name'] = $filterOfficeName;
+                $filter["office_name"] = $filterOfficeName;
             }
 
             if (!empty($filter)) {
-                $params['filter'] = $filter;
+                $params["filter"] = $filter;
             }
 
             // Add sort if provided
             if ($sort !== null) {
-                $params['sort'] = $sort;
+                $params["sort"] = $sort;
             }
 
             // Fetch certificate actions from 4HSE API
-            $result = $client->index('certificate-action', $params);
+            $result = $client->index("certificate-action", $params);
 
             return [
-                'success' => true,
-                'certificate_actions' => $result['data'],
-                'pagination' => $result['pagination'],
-                'filters_applied' => $filter,
+                "success" => true,
+                "certificate_actions" => $result["data"],
+                "pagination" => $result["pagination"],
+                "filters_applied" => $filter,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve certificate actions',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve certificate actions",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

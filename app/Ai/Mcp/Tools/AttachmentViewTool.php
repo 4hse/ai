@@ -20,32 +20,38 @@ class AttachmentViewTool
      * @param string $mode Fetch mode (download or inline)
      * @return array Attachment details
      */
-    #[McpTool(
-        name: 'view_4hse_attachment',
-        description: 'Retrieves a single 4HSE attachment by ID. View complete attachment details including path, metadata, file size, mimetype, and associated project information. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_attachment",
+            description: "Retrieves a single 4HSE attachment by ID. View complete attachment details including path, metadata, file size, mimetype, and associated project information. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewAttachment(
-        #[Schema(
-            type: 'string',
-            description: 'Attachment ID (UUID format)'
-        )]
+        #[
+            Schema(type: "string", description: "Attachment ID (UUID format)"),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Fetch mode for the attachment',
-            enum: ['download', 'inline']
-        )]
-        string $mode = 'download'
+        #[
+            Schema(
+                type: "string",
+                description: "Fetch mode for the attachment",
+                enum: ["download", "inline"],
+            ),
+        ]
+        string $mode = "download",
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -54,24 +60,23 @@ class AttachmentViewTool
 
             // Build query parameters
             $queryParams = [];
-            if ($mode !== 'download') {
-                $queryParams['mode'] = $mode;
+            if ($mode !== "download") {
+                $queryParams["mode"] = $mode;
             }
 
             // Fetch attachment from 4HSE API
-            $attachment = $client->view('attachment', $id, $queryParams);
+            $attachment = $client->view("attachment", $id, $queryParams);
 
             return [
-                'success' => true,
-                'attachment' => $attachment,
-                'mode' => $mode,
+                "success" => true,
+                "attachment" => $attachment,
+                "mode" => $mode,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve attachment',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve attachment",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

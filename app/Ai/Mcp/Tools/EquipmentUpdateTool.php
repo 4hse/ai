@@ -27,73 +27,72 @@ class EquipmentUpdateTool
      * @param string|null $model Equipment model
      * @return array Updated equipment details
      */
-    #[McpTool(
-        name: 'update_4hse_equipment',
-        description: 'Updates an existing equipment in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_equipment",
+            description: "Updates an existing equipment in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateEquipment(
-        #[Schema(
-            type: 'string',
-            description: 'Equipment ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Equipment ID in UUID format (required)",
+            ),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Office ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Office ID in UUID format"),
+        ]
         ?string $officeId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment name'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment name"),
+        ]
         ?string $name = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment code'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment code"),
+        ]
         ?string $code = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment description'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment description"),
+        ]
         ?string $description = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Project ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Project ID in UUID format"),
+        ]
         ?string $projectId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment serial number'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment serial number"),
+        ]
         ?string $serial = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment vendor'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment vendor"),
+        ]
         ?string $vendor = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment model'
-        )]
-        ?string $model = null
+        #[
+            Schema(type: "string", description: "Equipment model"),
+        ]
+        ?string $model = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -104,43 +103,42 @@ class EquipmentUpdateTool
             $equipmentData = [];
 
             if ($officeId !== null) {
-                $equipmentData['office_id'] = $officeId;
+                $equipmentData["office_id"] = $officeId;
             }
             if ($name !== null) {
-                $equipmentData['name'] = $name;
+                $equipmentData["name"] = $name;
             }
             if ($code !== null) {
-                $equipmentData['code'] = $code;
+                $equipmentData["code"] = $code;
             }
             if ($description !== null) {
-                $equipmentData['description'] = $description;
+                $equipmentData["description"] = $description;
             }
             if ($projectId !== null) {
-                $equipmentData['project_id'] = $projectId;
+                $equipmentData["project_id"] = $projectId;
             }
             if ($serial !== null) {
-                $equipmentData['serial'] = $serial;
+                $equipmentData["serial"] = $serial;
             }
             if ($vendor !== null) {
-                $equipmentData['vendor'] = $vendor;
+                $equipmentData["vendor"] = $vendor;
             }
             if ($model !== null) {
-                $equipmentData['model'] = $model;
+                $equipmentData["model"] = $model;
             }
 
             // Update equipment via 4HSE API
-            $equipment = $client->update('equipment', $id, $equipmentData);
+            $equipment = $client->update("equipment", $id, $equipmentData);
 
             return [
-                'success' => true,
-                'equipment' => $equipment,
+                "success" => true,
+                "equipment" => $equipment,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update equipment',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update equipment",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

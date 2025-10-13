@@ -19,25 +19,26 @@ class ActionViewTool
      * @param int $id Action ID
      * @return array Action details
      */
-    #[McpTool(
-        name: 'view_4hse_action',
-        description: 'Retrieves a single 4HSE action by ID. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_action",
+            description: "Retrieves a single 4HSE action by ID. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewAction(
-        #[Schema(
-            type: 'integer',
-            description: 'Action ID'
-        )]
-        int $id
+        #[Schema(type: "integer", description: "Action ID")] int $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +46,17 @@ class ActionViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch action from 4HSE API
-            $action = $client->view('action', $id);
+            $action = $client->view("action", $id);
 
             return [
-                'success' => true,
-                'action' => $action,
+                "success" => true,
+                "action" => $action,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve action',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve action",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

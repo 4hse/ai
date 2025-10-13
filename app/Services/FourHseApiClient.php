@@ -19,19 +19,18 @@ class FourHseApiClient
     private int $retryDelay;
     private bool $verifySSL;
 
-    public function __construct(
-        private readonly string $bearerToken
-    ) {
-        $this->baseUrl = config('fourhse.api.base_url');
-        $this->timeout = config('fourhse.api.timeout');
-        $this->retryTimes = config('fourhse.api.retry_times');
-        $this->retryDelay = config('fourhse.api.retry_delay');
-        $this->verifySSL = config('fourhse.api.verify_ssl');
+    public function __construct(private readonly string $bearerToken)
+    {
+        $this->baseUrl = config("fourhse.api.base_url");
+        $this->timeout = config("fourhse.api.timeout");
+        $this->retryTimes = config("fourhse.api.retry_times");
+        $this->retryDelay = config("fourhse.api.retry_delay");
+        $this->verifySSL = config("fourhse.api.verify_ssl");
 
-        Log::debug('FourHseApiClient initialized', [
-            'base_url' => $this->baseUrl,
-            'timeout' => $this->timeout,
-            'retry_times' => $this->retryTimes
+        Log::debug("FourHseApiClient initialized", [
+            "base_url" => $this->baseUrl,
+            "timeout" => $this->timeout,
+            "retry_times" => $this->retryTimes,
         ]);
     }
 
@@ -46,23 +45,23 @@ class FourHseApiClient
     public function index(string $resource, array $params = []): array
     {
         Log::info("Fetching {$resource} list from 4HSE API", [
-            'resource' => $resource,
-            'params' => $params
+            "resource" => $resource,
+            "params" => $params,
         ]);
 
-        $response = $this->request('POST', "/v2/{$resource}/index", $params);
+        $response = $this->request("POST", "/v2/{$resource}/index", $params);
 
         if (!$response->successful()) {
             Log::error("Failed to fetch {$resource} list", [
-                'resource' => $resource,
-                'status' => $response->status(),
-                'body' => $response->body(),
-                'params' => $params
+                "resource" => $resource,
+                "status" => $response->status(),
+                "body" => $response->body(),
+                "params" => $params,
             ]);
 
             throw new Exception(
                 "Failed to fetch {$resource} list: " . $response->body(),
-                $response->status()
+                $response->status(),
             );
         }
 
@@ -70,15 +69,15 @@ class FourHseApiClient
         $pagination = $this->extractPaginationHeaders($response);
 
         Log::info("{$resource} list fetched successfully", [
-            'resource' => $resource,
-            'total_count' => $pagination['total_count'],
-            'current_page' => $pagination['current_page'],
-            'page_count' => $pagination['page_count']
+            "resource" => $resource,
+            "total_count" => $pagination["total_count"],
+            "current_page" => $pagination["current_page"],
+            "page_count" => $pagination["page_count"],
         ]);
 
         return [
-            'data' => $response->json(),
-            'pagination' => $pagination,
+            "data" => $response->json(),
+            "pagination" => $pagination,
         ];
     }
 
@@ -91,37 +90,43 @@ class FourHseApiClient
      * @return array Resource data
      * @throws Exception
      */
-    public function view(string $resource, int|string $id, array $params = []): array
-    {
+    public function view(
+        string $resource,
+        int|string $id,
+        array $params = [],
+    ): array {
         Log::info("Fetching {$resource} view from 4HSE API", [
-            'resource' => $resource,
-            'id' => $id,
-            'params' => $params
+            "resource" => $resource,
+            "id" => $id,
+            "params" => $params,
         ]);
 
         // Build query string with ID and any additional params
-        $queryParams = array_merge(['id' => $id], $params);
+        $queryParams = array_merge(["id" => $id], $params);
         $queryString = http_build_query($queryParams);
 
-        $response = $this->request('GET', "/v2/{$resource}/view?{$queryString}");
+        $response = $this->request(
+            "GET",
+            "/v2/{$resource}/view?{$queryString}",
+        );
 
         if (!$response->successful()) {
             Log::error("Failed to fetch {$resource} view", [
-                'resource' => $resource,
-                'id' => $id,
-                'status' => $response->status(),
-                'body' => $response->body()
+                "resource" => $resource,
+                "id" => $id,
+                "status" => $response->status(),
+                "body" => $response->body(),
             ]);
 
             throw new Exception(
                 "Failed to fetch {$resource} view: " . $response->body(),
-                $response->status()
+                $response->status(),
             );
         }
 
         Log::info("{$resource} view fetched successfully", [
-            'resource' => $resource,
-            'id' => $id
+            "resource" => $resource,
+            "id" => $id,
         ]);
 
         return $response->json();
@@ -138,27 +143,27 @@ class FourHseApiClient
     public function create(string $resource, array $data): array
     {
         Log::info("Creating {$resource} via 4HSE API", [
-            'resource' => $resource,
-            'has_data' => !empty($data)
+            "resource" => $resource,
+            "has_data" => !empty($data),
         ]);
 
-        $response = $this->request('POST', "/v2/{$resource}/create", $data);
+        $response = $this->request("POST", "/v2/{$resource}/create", $data);
 
         if (!$response->successful()) {
             Log::error("Failed to create {$resource}", [
-                'resource' => $resource,
-                'status' => $response->status(),
-                'body' => $response->body()
+                "resource" => $resource,
+                "status" => $response->status(),
+                "body" => $response->body(),
             ]);
 
             throw new Exception(
                 "Failed to create {$resource}: " . $response->body(),
-                $response->status()
+                $response->status(),
             );
         }
 
         Log::info("{$resource} created successfully", [
-            'resource' => $resource
+            "resource" => $resource,
         ]);
 
         return $response->json();
@@ -174,39 +179,47 @@ class FourHseApiClient
      * @return array Updated resource data
      * @throws Exception
      */
-    public function update(string $resource, int|string $id, array $data, array $queryParams = []): array
-    {
+    public function update(
+        string $resource,
+        int|string $id,
+        array $data,
+        array $queryParams = [],
+    ): array {
         Log::info("Updating {$resource} via 4HSE API", [
-            'resource' => $resource,
-            'id' => $id,
-            'has_data' => !empty($data),
-            'query_params' => $queryParams
+            "resource" => $resource,
+            "id" => $id,
+            "has_data" => !empty($data),
+            "query_params" => $queryParams,
         ]);
 
         // Build query string
-        $params = $id ? ['id' => $id] : [];
+        $params = $id ? ["id" => $id] : [];
         $params = array_merge($params, $queryParams);
         $queryString = http_build_query($params);
 
-        $response = $this->request('PUT', "/v2/{$resource}/update?{$queryString}", $data);
+        $response = $this->request(
+            "PUT",
+            "/v2/{$resource}/update?{$queryString}",
+            $data,
+        );
 
         if (!$response->successful()) {
             Log::error("Failed to update {$resource}", [
-                'resource' => $resource,
-                'id' => $id,
-                'status' => $response->status(),
-                'body' => $response->body()
+                "resource" => $resource,
+                "id" => $id,
+                "status" => $response->status(),
+                "body" => $response->body(),
             ]);
 
             throw new Exception(
                 "Failed to update {$resource}: " . $response->body(),
-                $response->status()
+                $response->status(),
             );
         }
 
         Log::info("{$resource} updated successfully", [
-            'resource' => $resource,
-            'id' => $id
+            "resource" => $resource,
+            "id" => $id,
         ]);
 
         return $response->json();
@@ -221,41 +234,88 @@ class FourHseApiClient
      * @return bool Success status
      * @throws Exception
      */
-    public function delete(string $resource, int|string $id, array $queryParams = []): bool
-    {
+    public function delete(
+        string $resource,
+        int|string $id,
+        array $queryParams = [],
+    ): bool {
         Log::info("Deleting {$resource} via 4HSE API", [
-            'resource' => $resource,
-            'id' => $id,
-            'query_params' => $queryParams
+            "resource" => $resource,
+            "id" => $id,
+            "query_params" => $queryParams,
         ]);
 
         // Build query string
-        $params = $id ? ['id' => $id] : [];
+        $params = $id ? ["id" => $id] : [];
         $params = array_merge($params, $queryParams);
         $queryString = http_build_query($params);
 
-        $response = $this->request('DELETE', "/v2/{$resource}/delete?{$queryString}");
+        $response = $this->request(
+            "DELETE",
+            "/v2/{$resource}/delete?{$queryString}",
+        );
 
         if (!$response->successful()) {
             Log::error("Failed to delete {$resource}", [
-                'resource' => $resource,
-                'id' => $id,
-                'status' => $response->status(),
-                'body' => $response->body()
+                "resource" => $resource,
+                "id" => $id,
+                "status" => $response->status(),
+                "body" => $response->body(),
             ]);
 
             throw new Exception(
                 "Failed to delete {$resource}: " . $response->body(),
-                $response->status()
+                $response->status(),
             );
         }
 
         Log::info("{$resource} deleted successfully", [
-            'resource' => $resource,
-            'id' => $id
+            "resource" => $resource,
+            "id" => $id,
         ]);
 
         return true;
+    }
+
+    /**
+     * Generic create operation with multipart/form-data - Create a resource with file upload
+     *
+     * @param string $resource Resource name (e.g., 'attachment')
+     * @param array $data Form data including files
+     * @return array Created resource data
+     * @throws Exception
+     */
+    public function createMultipart(string $resource, array $data): array
+    {
+        Log::info("Creating {$resource} via 4HSE API with multipart data", [
+            "resource" => $resource,
+            "has_data" => !empty($data),
+        ]);
+
+        $response = $this->requestMultipart(
+            "POST",
+            "/v2/{$resource}/create",
+            $data,
+        );
+
+        if (!$response->successful()) {
+            Log::error("Failed to create {$resource} with multipart", [
+                "resource" => $resource,
+                "status" => $response->status(),
+                "body" => $response->body(),
+            ]);
+
+            throw new Exception(
+                "Failed to create {$resource}: " . $response->body(),
+                $response->status(),
+            );
+        }
+
+        Log::info("{$resource} created successfully with multipart", [
+            "resource" => $resource,
+        ]);
+
+        return $response->json();
     }
 
     /**
@@ -266,24 +326,64 @@ class FourHseApiClient
      * @param array $data Request data
      * @return Response
      */
-    private function request(string $method, string $endpoint, array $data = []): Response
-    {
-        Log::debug('Making API request', [
-            'method' => $method,
-            'endpoint' => $endpoint,
-            'has_data' => !empty($data),
-            'data' => $data
+    private function request(
+        string $method,
+        string $endpoint,
+        array $data = [],
+    ): Response {
+        Log::debug("Making API request", [
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "has_data" => !empty($data),
+            "data" => $data,
         ]);
 
         $http = $this->buildHttpClient();
 
-        $response = $http->retry($this->retryTimes, $this->retryDelay)
+        $response = $http
+            ->retry($this->retryTimes, $this->retryDelay)
             ->$method($this->baseUrl . $endpoint, $data);
 
-        Log::debug('API request completed', [
-            'method' => $method,
-            'endpoint' => $endpoint,
-            'status' => $response->status()
+        Log::debug("API request completed", [
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "status" => $response->status(),
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Make a multipart/form-data HTTP request to 4HSE API
+     *
+     * @param string $method HTTP method (POST, PUT)
+     * @param string $endpoint API endpoint path
+     * @param array $data Multipart form data
+     * @return Response
+     */
+    private function requestMultipart(
+        string $method,
+        string $endpoint,
+        array $data = [],
+    ): Response {
+        Log::debug("Making multipart API request", [
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "has_data" => !empty($data),
+        ]);
+
+        $http = $this->buildHttpClientMultipart();
+
+        // Use asMultipart() to send data as multipart/form-data
+        $response = $http
+            ->retry($this->retryTimes, $this->retryDelay)
+            ->asMultipart()
+            ->$method($this->baseUrl . $endpoint, $data);
+
+        Log::debug("Multipart API request completed", [
+            "method" => $method,
+            "endpoint" => $endpoint,
+            "status" => $response->status(),
         ]);
 
         return $response;
@@ -297,7 +397,23 @@ class FourHseApiClient
         $http = Http::withToken($this->bearerToken)
             ->timeout($this->timeout)
             ->acceptJson()
-            ->contentType('application/json');
+            ->contentType("application/json");
+
+        if (!$this->verifySSL) {
+            $http = $http->withoutVerifying();
+        }
+
+        return $http;
+    }
+
+    /**
+     * Build HTTP client for multipart requests with authentication and configuration
+     */
+    private function buildHttpClientMultipart(): PendingRequest
+    {
+        $http = Http::withToken($this->bearerToken)
+            ->timeout($this->timeout)
+            ->accept("application/json");
 
         if (!$this->verifySSL) {
             $http = $http->withoutVerifying();
@@ -314,10 +430,12 @@ class FourHseApiClient
         $headers = $response->headers();
 
         return [
-            'current_page' => (int) ($headers['X-Pagination-Current-Page'][0] ?? 1),
-            'page_count' => (int) ($headers['X-Pagination-Page-Count'][0] ?? 1),
-            'per_page' => (int) ($headers['X-Pagination-Per-Page'][0] ?? 100),
-            'total_count' => (int) ($headers['X-Pagination-Total-Count'][0] ?? 0),
+            "current_page" =>
+                (int) ($headers["X-Pagination-Current-Page"][0] ?? 1),
+            "page_count" => (int) ($headers["X-Pagination-Page-Count"][0] ?? 1),
+            "per_page" => (int) ($headers["X-Pagination-Per-Page"][0] ?? 100),
+            "total_count" =>
+                (int) ($headers["X-Pagination-Total-Count"][0] ?? 0),
         ];
     }
 

@@ -25,62 +25,77 @@ class ActionSubscriptionUpdateTool
      * @param array|null $data Additional data (JSON object)
      * @return array Updated action subscription details
      */
-    #[McpTool(
-        name: 'update_4hse_action_subscription',
-        description: 'Updates an existing action subscription in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_action_subscription",
+            description: "Updates an existing action subscription in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateActionSubscription(
-        #[Schema(
-            type: 'string',
-            description: 'Action subscription ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action subscription ID in UUID format (required)",
+            ),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Action ID in UUID format"),
+        ]
         ?string $actionId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Subscriber ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Subscriber ID in UUID format"),
+        ]
         ?string $subscriberId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Subscriber type',
-            enum: ['PERSON', 'MATERIAL_ITEM', 'ROLE', 'WORK_GROUP', 'WORK_ENVIRONMENT', 'SUBSTANCE', 'EQUIPMENT']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Subscriber type",
+                enum: [
+                    "PERSON",
+                    "MATERIAL_ITEM",
+                    "ROLE",
+                    "WORK_GROUP",
+                    "WORK_ENVIRONMENT",
+                    "SUBSTANCE",
+                    "EQUIPMENT",
+                ],
+            ),
+        ]
         ?string $subscriberType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Subtenant ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Subtenant ID in UUID format"),
+        ]
         ?string $subtenantId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Tenant ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Tenant ID in UUID format"),
+        ]
         ?string $tenantId = null,
 
-        #[Schema(
-            type: 'object',
-            description: 'Additional data (JSON object)'
-        )]
-        ?array $data = null
+        #[
+            Schema(
+                type: "object",
+                description: "Additional data (JSON object)",
+            ),
+        ]
+        ?array $data = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -91,37 +106,40 @@ class ActionSubscriptionUpdateTool
             $subscriptionData = [];
 
             if ($actionId !== null) {
-                $subscriptionData['action_id'] = $actionId;
+                $subscriptionData["action_id"] = $actionId;
             }
             if ($subscriberId !== null) {
-                $subscriptionData['subscriber_id'] = $subscriberId;
+                $subscriptionData["subscriber_id"] = $subscriberId;
             }
             if ($subscriberType !== null) {
-                $subscriptionData['subscriber_type'] = $subscriberType;
+                $subscriptionData["subscriber_type"] = $subscriberType;
             }
             if ($subtenantId !== null) {
-                $subscriptionData['subtenant_id'] = $subtenantId;
+                $subscriptionData["subtenant_id"] = $subtenantId;
             }
             if ($tenantId !== null) {
-                $subscriptionData['tenant_id'] = $tenantId;
+                $subscriptionData["tenant_id"] = $tenantId;
             }
             if ($data !== null) {
-                $subscriptionData['data'] = $data;
+                $subscriptionData["data"] = $data;
             }
 
             // Update action subscription via 4HSE API
-            $actionSubscription = $client->update('action-subscription', $id, $subscriptionData);
+            $actionSubscription = $client->update(
+                "action-subscription",
+                $id,
+                $subscriptionData,
+            );
 
             return [
-                'success' => true,
-                'action_subscription' => $actionSubscription,
+                "success" => true,
+                "action_subscription" => $actionSubscription,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update action subscription',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update action subscription",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

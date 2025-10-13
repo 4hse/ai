@@ -30,94 +30,114 @@ class CertificateUpdateTool
      * @param int|null $validity Validity period
      * @return array Updated certificate details
      */
-    #[McpTool(
-        name: 'update_4hse_certificate',
-        description: 'Updates an existing certificate in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_certificate",
+            description: "Updates an existing certificate in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateCertificate(
-        #[Schema(
-            type: 'string',
-            description: 'Certificate ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Certificate ID in UUID format (required)",
+            ),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Release date in YYYY-MM-DD format'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Release date in YYYY-MM-DD format",
+            ),
+        ]
         ?string $dateRelease = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Expiration date in YYYY-MM-DD format'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Expiration date in YYYY-MM-DD format",
+            ),
+        ]
         ?string $dateExpire = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Certificate name (max 255 characters)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Certificate name (max 255 characters)",
+            ),
+        ]
         ?string $name = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Additional notes'
-        )]
+        #[
+            Schema(type: "string", description: "Additional notes"),
+        ]
         ?string $note = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Action type',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Action type",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         ?string $actionType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Resource ID in UUID format: ID of the person, material, equipment, etc. the certificate is for'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Resource ID in UUID format: ID of the person, material, equipment, etc. the certificate is for",
+            ),
+        ]
         ?string $resourceId = null,
 
-        #[Schema(
-            type: 'object',
-            description: 'Additional data (JSON object)'
-        )]
+        #[
+            Schema(
+                type: "object",
+                description: "Additional data (JSON object)",
+            ),
+        ]
         ?array $data = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Warning status',
-            enum: [0, 1]
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Warning status",
+                enum: [0, 1],
+            ),
+        ]
         ?int $warning = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Tenant ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Tenant ID in UUID format"),
+        ]
         ?string $tenantId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Validity unit',
-            enum: ['YEAR', 'MONTH', 'DAY']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Validity unit",
+                enum: ["YEAR", "MONTH", "DAY"],
+            ),
+        ]
         ?string $validityUnit = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Validity period'
-        )]
-        ?int $validity = null
+        #[
+            Schema(type: "integer", description: "Validity period"),
+        ]
+        ?int $validity = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -128,52 +148,55 @@ class CertificateUpdateTool
             $certificateData = [];
 
             if ($dateRelease !== null) {
-                $certificateData['date_release'] = $dateRelease;
+                $certificateData["date_release"] = $dateRelease;
             }
             if ($dateExpire !== null) {
-                $certificateData['date_expire'] = $dateExpire;
+                $certificateData["date_expire"] = $dateExpire;
             }
             if ($name !== null) {
-                $certificateData['name'] = $name;
+                $certificateData["name"] = $name;
             }
             if ($note !== null) {
-                $certificateData['note'] = $note;
+                $certificateData["note"] = $note;
             }
             if ($actionType !== null) {
-                $certificateData['action_type'] = $actionType;
+                $certificateData["action_type"] = $actionType;
             }
             if ($resourceId !== null) {
-                $certificateData['resource_id'] = $resourceId;
+                $certificateData["resource_id"] = $resourceId;
             }
             if ($data !== null) {
-                $certificateData['data'] = $data;
+                $certificateData["data"] = $data;
             }
             if ($warning !== null) {
-                $certificateData['warning'] = $warning;
+                $certificateData["warning"] = $warning;
             }
             if ($tenantId !== null) {
-                $certificateData['tenant_id'] = $tenantId;
+                $certificateData["tenant_id"] = $tenantId;
             }
             if ($validityUnit !== null) {
-                $certificateData['validity_unit'] = $validityUnit;
+                $certificateData["validity_unit"] = $validityUnit;
             }
             if ($validity !== null) {
-                $certificateData['validity'] = $validity;
+                $certificateData["validity"] = $validity;
             }
 
             // Update certificate via 4HSE API
-            $certificate = $client->update('certificate', $id, $certificateData);
+            $certificate = $client->update(
+                "certificate",
+                $id,
+                $certificateData,
+            );
 
             return [
-                'success' => true,
-                'certificate' => $certificate,
+                "success" => true,
+                "certificate" => $certificate,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update certificate',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update certificate",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

@@ -19,25 +19,29 @@ class OfficeViewTool
      * @param string $id Office ID (UUID)
      * @return array Office details
      */
-    #[McpTool(
-        name: 'view_4hse_office',
-        description: 'Retrieves a single 4HSE office by ID. View complete office details including address, project, type, tax information. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_office",
+            description: "Retrieves a single 4HSE office by ID. View complete office details including address, project, type, tax information. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewOffice(
-        #[Schema(
-            type: 'string',
-            description: 'Office ID (UUID format)'
-        )]
-        string $id
+        #[
+            Schema(type: "string", description: "Office ID (UUID format)"),
+        ]
+        string $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +49,17 @@ class OfficeViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch office from 4HSE API
-            $office = $client->view('office', $id);
+            $office = $client->view("office", $id);
 
             return [
-                'success' => true,
-                'office' => $office,
+                "success" => true,
+                "office" => $office,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve office',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve office",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

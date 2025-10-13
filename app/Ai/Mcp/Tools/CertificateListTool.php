@@ -26,73 +26,96 @@ class CertificateListTool
      * @param bool $history Include historicized items (default: false)
      * @return array List of certificates with pagination
      */
-    #[McpTool(
-        name: 'list_4hse_certificates',
-        description: 'List certificates (attestati/certificati) for people, equipment, or materials. Use this to find certificates by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or to check expired/valid certificates. Filter by certificate name, action type, resource ID, warning status. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "list_4hse_certificates",
+            description: "List certificates (attestati/certificati) for people, equipment, or materials. Use this to find certificates by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or to check expired/valid certificates. Filter by certificate name, action type, resource ID, warning status. Requires OAuth2 authentication.",
+        ),
+    ]
     public function listCertificates(
-        #[Schema(
-            type: 'string',
-            description: 'Filter by certificate name'
-        )]
+        #[
+            Schema(type: "string", description: "Filter by certificate name"),
+        ]
         ?string $filterName = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by action type',
-            enum: ['TRAINING', 'MAINTENANCE', 'HEALTH', 'CHECK', 'PER']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by action type",
+                enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
+            ),
+        ]
         ?string $filterActionType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Filter by resource ID (UUID): ID of person, material, equipment, etc.'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Filter by resource ID (UUID): ID of person, material, equipment, etc.",
+            ),
+        ]
         ?string $filterResourceId = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Filter by warning status',
-            enum: [0, 1]
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Filter by warning status",
+                enum: [0, 1],
+            ),
+        ]
         ?int $filterWarning = null,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Number of results per page',
-            minimum: 1,
-            maximum: 100
-        )]
+        #[
+            Schema(
+                type: "integer",
+                description: "Number of results per page",
+                minimum: 1,
+                maximum: 100,
+            ),
+        ]
         int $perPage = 20,
 
-        #[Schema(
-            type: 'integer',
-            description: 'Page number',
-            minimum: 1
-        )]
+        #[
+            Schema(type: "integer", description: "Page number", minimum: 1),
+        ]
         int $page = 1,
 
-        #[Schema(
-            type: 'string',
-            description: 'Sort by field',
-            enum: ['date_release', '-date_release', 'date_expire', '-date_expire', 'name', '-name', 'action_type', '-action_type']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Sort by field",
+                enum: [
+                    "date_release",
+                    "-date_release",
+                    "date_expire",
+                    "-date_expire",
+                    "name",
+                    "-name",
+                    "action_type",
+                    "-action_type",
+                ],
+            ),
+        ]
         ?string $sort = null,
 
-        #[Schema(
-            type: 'boolean',
-            description: 'Include historicized items that are not currently valid'
-        )]
-        bool $history = false
+        #[
+            Schema(
+                type: "boolean",
+                description: "Include historicized items that are not currently valid",
+            ),
+        ]
+        bool $history = false,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -101,50 +124,49 @@ class CertificateListTool
 
             // Build request parameters
             $params = [
-                'per-page' => $perPage,
-                'page' => $page,
-                'history' => $history,
+                "per-page" => $perPage,
+                "page" => $page,
+                "history" => $history,
             ];
 
             // Add filters if provided
             $filter = [];
             if ($filterName !== null) {
-                $filter['name'] = $filterName;
+                $filter["name"] = $filterName;
             }
             if ($filterActionType !== null) {
-                $filter['action_type'] = $filterActionType;
+                $filter["action_type"] = $filterActionType;
             }
             if ($filterResourceId !== null) {
-                $filter['resource_id'] = $filterResourceId;
+                $filter["resource_id"] = $filterResourceId;
             }
             if ($filterWarning !== null) {
-                $filter['warning'] = $filterWarning;
+                $filter["warning"] = $filterWarning;
             }
 
             if (!empty($filter)) {
-                $params['filter'] = $filter;
+                $params["filter"] = $filter;
             }
 
             // Add sort if provided
             if ($sort !== null) {
-                $params['sort'] = $sort;
+                $params["sort"] = $sort;
             }
 
             // Fetch certificates from 4HSE API
-            $result = $client->index('certificate', $params);
+            $result = $client->index("certificate", $params);
 
             return [
-                'success' => true,
-                'certificates' => $result['data'],
-                'pagination' => $result['pagination'],
-                'filters_applied' => $filter,
+                "success" => true,
+                "certificates" => $result["data"],
+                "pagination" => $result["pagination"],
+                "filters_applied" => $filter,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve certificates',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve certificates",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

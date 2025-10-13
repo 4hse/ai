@@ -19,25 +19,29 @@ class DemandViewTool
      * @param string $id Demand ID (UUID)
      * @return array Demand details
      */
-    #[McpTool(
-        name: 'view_4hse_demand',
-        description: 'Retrieves a single 4HSE demand by ID. View complete demand details including action type, resource type, office, project, action and resource information. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_demand",
+            description: "Retrieves a single 4HSE demand by ID. View complete demand details including action type, resource type, office, project, action and resource information. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewDemand(
-        #[Schema(
-            type: 'string',
-            description: 'Demand ID (UUID format)'
-        )]
-        string $id
+        #[
+            Schema(type: "string", description: "Demand ID (UUID format)"),
+        ]
+        string $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +49,17 @@ class DemandViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch demand from 4HSE API
-            $demand = $client->view('demand', $id);
+            $demand = $client->view("demand", $id);
 
             return [
-                'success' => true,
-                'demand' => $demand,
+                "success" => true,
+                "demand" => $demand,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve demand',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve demand",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

@@ -26,67 +26,67 @@ class EquipmentCreateTool
      * @param string|null $model Equipment model
      * @return array Created equipment details
      */
-    #[McpTool(
-        name: 'create_4hse_equipment',
-        description: 'Creates a new equipment in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "create_4hse_equipment",
+            description: "Creates a new equipment in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function createEquipment(
-        #[Schema(
-            type: 'string',
-            description: 'Office ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Office ID in UUID format (required)",
+            ),
+        ]
         string $officeId,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment name (required)'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment name (required)"),
+        ]
         string $name,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment code'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment code"),
+        ]
         ?string $code = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment description'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment description"),
+        ]
         ?string $description = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Project ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Project ID in UUID format"),
+        ]
         ?string $projectId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment serial number'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment serial number"),
+        ]
         ?string $serial = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment vendor'
-        )]
+        #[
+            Schema(type: "string", description: "Equipment vendor"),
+        ]
         ?string $vendor = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Equipment model'
-        )]
-        ?string $model = null
+        #[
+            Schema(type: "string", description: "Equipment model"),
+        ]
+        ?string $model = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -95,43 +95,42 @@ class EquipmentCreateTool
 
             // Build equipment data
             $equipmentData = [
-                'office_id' => $officeId,
-                'name' => $name,
+                "office_id" => $officeId,
+                "name" => $name,
             ];
 
             // Add optional fields if provided
             if ($code !== null) {
-                $equipmentData['code'] = $code;
+                $equipmentData["code"] = $code;
             }
             if ($description !== null) {
-                $equipmentData['description'] = $description;
+                $equipmentData["description"] = $description;
             }
             if ($projectId !== null) {
-                $equipmentData['project_id'] = $projectId;
+                $equipmentData["project_id"] = $projectId;
             }
             if ($serial !== null) {
-                $equipmentData['serial'] = $serial;
+                $equipmentData["serial"] = $serial;
             }
             if ($vendor !== null) {
-                $equipmentData['vendor'] = $vendor;
+                $equipmentData["vendor"] = $vendor;
             }
             if ($model !== null) {
-                $equipmentData['model'] = $model;
+                $equipmentData["model"] = $model;
             }
 
             // Create equipment via 4HSE API
-            $equipment = $client->create('equipment', $equipmentData);
+            $equipment = $client->create("equipment", $equipmentData);
 
             return [
-                'success' => true,
-                'equipment' => $equipment,
+                "success" => true,
+                "equipment" => $equipment,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to create equipment',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to create equipment",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

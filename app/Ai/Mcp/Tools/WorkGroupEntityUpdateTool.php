@@ -25,62 +25,72 @@ class WorkGroupEntityUpdateTool
      * @param string|null $unitOfMeasureId Unit of measure ID (UUID)
      * @return array Updated work group entity details
      */
-    #[McpTool(
-        name: 'update_4hse_work_group_entity',
-        description: 'Updates an existing work group entity association in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_work_group_entity",
+            description: "Updates an existing work group entity association in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateWorkGroupEntity(
-        #[Schema(
-            type: 'string',
-            description: 'Work group entity ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Work group entity ID in UUID format (required)",
+            ),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Work group ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Work group ID in UUID format"),
+        ]
         ?string $workGroupId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Entity ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Entity ID in UUID format"),
+        ]
         ?string $entityId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Entity type',
-            enum: ['EQUIPMENT', 'WORK_ENVIRONMENT', 'SUBSTANCE']
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Entity type",
+                enum: ["EQUIPMENT", "WORK_ENVIRONMENT", "SUBSTANCE"],
+            ),
+        ]
         ?string $entityType = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Work group entity description'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Work group entity description",
+            ),
+        ]
         ?string $description = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Time spent measure'
-        )]
+        #[
+            Schema(type: "string", description: "Time spent measure"),
+        ]
         ?string $timeSpentMeasure = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Unit of measure ID in UUID format'
-        )]
-        ?string $unitOfMeasureId = null
+        #[
+            Schema(
+                type: "string",
+                description: "Unit of measure ID in UUID format",
+            ),
+        ]
+        ?string $unitOfMeasureId = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -91,37 +101,40 @@ class WorkGroupEntityUpdateTool
             $workGroupEntityData = [];
 
             if ($workGroupId !== null) {
-                $workGroupEntityData['work_group_id'] = $workGroupId;
+                $workGroupEntityData["work_group_id"] = $workGroupId;
             }
             if ($entityId !== null) {
-                $workGroupEntityData['entity_id'] = $entityId;
+                $workGroupEntityData["entity_id"] = $entityId;
             }
             if ($entityType !== null) {
-                $workGroupEntityData['entity_type'] = $entityType;
+                $workGroupEntityData["entity_type"] = $entityType;
             }
             if ($description !== null) {
-                $workGroupEntityData['description'] = $description;
+                $workGroupEntityData["description"] = $description;
             }
             if ($timeSpentMeasure !== null) {
-                $workGroupEntityData['time_spent_measure'] = $timeSpentMeasure;
+                $workGroupEntityData["time_spent_measure"] = $timeSpentMeasure;
             }
             if ($unitOfMeasureId !== null) {
-                $workGroupEntityData['unit_of_measure_id'] = $unitOfMeasureId;
+                $workGroupEntityData["unit_of_measure_id"] = $unitOfMeasureId;
             }
 
             // Update work group entity via 4HSE API
-            $workGroupEntity = $client->update('work-group-entity', $id, $workGroupEntityData);
+            $workGroupEntity = $client->update(
+                "work-group-entity",
+                $id,
+                $workGroupEntityData,
+            );
 
             return [
-                'success' => true,
-                'work_group_entity' => $workGroupEntity,
+                "success" => true,
+                "work_group_entity" => $workGroupEntity,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update work group entity',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update work group entity",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

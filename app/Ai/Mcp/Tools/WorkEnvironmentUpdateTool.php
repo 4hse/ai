@@ -24,55 +24,57 @@ class WorkEnvironmentUpdateTool
      * @param string|null $description Work environment description
      * @return array Updated work environment details
      */
-    #[McpTool(
-        name: 'update_4hse_work_environment',
-        description: 'Updates an existing work environment in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "update_4hse_work_environment",
+            description: "Updates an existing work environment in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function updateWorkEnvironment(
-        #[Schema(
-            type: 'string',
-            description: 'Work environment ID in UUID format (required)'
-        )]
+        #[
+            Schema(
+                type: "string",
+                description: "Work environment ID in UUID format (required)",
+            ),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'string',
-            description: 'Office ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Office ID in UUID format"),
+        ]
         ?string $officeId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Work environment name'
-        )]
+        #[
+            Schema(type: "string", description: "Work environment name"),
+        ]
         ?string $name = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Project ID in UUID format'
-        )]
+        #[
+            Schema(type: "string", description: "Project ID in UUID format"),
+        ]
         ?string $projectId = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Work environment code'
-        )]
+        #[
+            Schema(type: "string", description: "Work environment code"),
+        ]
         ?string $code = null,
 
-        #[Schema(
-            type: 'string',
-            description: 'Work environment description'
-        )]
-        ?string $description = null
+        #[
+            Schema(type: "string", description: "Work environment description"),
+        ]
+        ?string $description = null,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -83,34 +85,37 @@ class WorkEnvironmentUpdateTool
             $workEnvironmentData = [];
 
             if ($officeId !== null) {
-                $workEnvironmentData['office_id'] = $officeId;
+                $workEnvironmentData["office_id"] = $officeId;
             }
             if ($name !== null) {
-                $workEnvironmentData['name'] = $name;
+                $workEnvironmentData["name"] = $name;
             }
             if ($projectId !== null) {
-                $workEnvironmentData['project_id'] = $projectId;
+                $workEnvironmentData["project_id"] = $projectId;
             }
             if ($code !== null) {
-                $workEnvironmentData['code'] = $code;
+                $workEnvironmentData["code"] = $code;
             }
             if ($description !== null) {
-                $workEnvironmentData['description'] = $description;
+                $workEnvironmentData["description"] = $description;
             }
 
             // Update work environment via 4HSE API
-            $workEnvironment = $client->update('work-environment', $id, $workEnvironmentData);
+            $workEnvironment = $client->update(
+                "work-environment",
+                $id,
+                $workEnvironmentData,
+            );
 
             return [
-                'success' => true,
-                'work_environment' => $workEnvironment,
+                "success" => true,
+                "work_environment" => $workEnvironment,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to update work environment',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to update work environment",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

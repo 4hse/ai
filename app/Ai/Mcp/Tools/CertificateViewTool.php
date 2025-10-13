@@ -19,25 +19,29 @@ class CertificateViewTool
      * @param string $id Certificate ID (UUID)
      * @return array Certificate details
      */
-    #[McpTool(
-        name: 'view_4hse_certificate',
-        description: 'Retrieves a single 4HSE certificate by ID. View complete certificate details including dates, validity, notes. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "view_4hse_certificate",
+            description: "Retrieves a single 4HSE certificate by ID. View complete certificate details including dates, validity, notes. Requires OAuth2 authentication.",
+        ),
+    ]
     public function viewCertificate(
-        #[Schema(
-            type: 'string',
-            description: 'Certificate ID (UUID format)'
-        )]
-        string $id
+        #[
+            Schema(type: "string", description: "Certificate ID (UUID format)"),
+        ]
+        string $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -45,18 +49,17 @@ class CertificateViewTool
             $client = new FourHseApiClient($bearerToken);
 
             // Fetch certificate from 4HSE API
-            $certificate = $client->view('certificate', $id);
+            $certificate = $client->view("certificate", $id);
 
             return [
-                'success' => true,
-                'certificate' => $certificate,
+                "success" => true,
+                "certificate" => $certificate,
             ];
-
         } catch (Throwable $e) {
             return [
-                'error' => 'Failed to retrieve certificate',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to retrieve certificate",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }

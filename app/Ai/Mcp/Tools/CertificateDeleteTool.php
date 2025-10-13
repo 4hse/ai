@@ -20,31 +20,37 @@ class CertificateDeleteTool
      * @param bool $force Force deletion of the entity and all related entities.
      * @return array Deletion result
      */
-    #[McpTool(
-        name: 'delete_4hse_certificate',
-        description: 'Deletes a certificate in 4HSE. Requires OAuth2 authentication.'
-    )]
+    #[
+        McpTool(
+            name: "delete_4hse_certificate",
+            description: "Deletes a certificate in 4HSE. Requires OAuth2 authentication.",
+        ),
+    ]
     public function deleteCertificate(
-        #[Schema(
-            type: 'string',
-            description: 'Certificate ID (UUID format)'
-        )]
+        #[
+            Schema(type: "string", description: "Certificate ID (UUID format)"),
+        ]
         string $id,
 
-        #[Schema(
-            type: 'boolean',
-            description: 'Force deletion of the entity and all related entities'
-        )]
-        bool $force = true
+        #[
+            Schema(
+                type: "boolean",
+                description: "Force deletion of the entity and all related entities",
+            ),
+        ]
+        bool $force = true,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)
-            $bearerToken = app()->has('mcp.bearer_token') ? app('mcp.bearer_token') : null;
+            $bearerToken = app()->has("mcp.bearer_token")
+                ? app("mcp.bearer_token")
+                : null;
 
             if (!$bearerToken) {
                 return [
-                    'error' => 'Authentication required',
-                    'message' => 'This tool requires OAuth2 authentication. The bearer token was not found in the request context.',
+                    "error" => "Authentication required",
+                    "message" =>
+                        "This tool requires OAuth2 authentication. The bearer token was not found in the request context.",
                 ];
             }
 
@@ -54,33 +60,33 @@ class CertificateDeleteTool
             // Build query parameters
             $queryParams = [];
             if ($force) {
-                $queryParams['force'] = 'true';
+                $queryParams["force"] = "true";
             }
 
             // Delete certificate via 4HSE API
-            $result = $client->delete('certificate', $id, $queryParams);
+            $result = $client->delete("certificate", $id, $queryParams);
 
             return [
-                'success' => true,
-                'message' => 'Certificate deleted successfully',
-                'deleted' => $result,
+                "success" => true,
+                "message" => "Certificate deleted successfully",
+                "deleted" => $result,
             ];
-
         } catch (Throwable $e) {
             // Check if this is a 400 error with related entities info
             if ($e->getCode() === 400) {
                 return [
-                    'error' => 'Cannot delete certificate',
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                    'hint' => 'The certificate has related entities. Use force=true to delete all related entities.',
+                    "error" => "Cannot delete certificate",
+                    "message" => $e->getMessage(),
+                    "code" => $e->getCode(),
+                    "hint" =>
+                        "The certificate has related entities. Use force=true to delete all related entities.",
                 ];
             }
 
             return [
-                'error' => 'Failed to delete certificate',
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
+                "error" => "Failed to delete certificate",
+                "message" => $e->getMessage(),
+                "code" => $e->getCode(),
             ];
         }
     }
