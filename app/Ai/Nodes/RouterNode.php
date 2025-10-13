@@ -33,6 +33,7 @@ class RouterNode extends Node
         yield new ProgressEvent("Choosing the agent...");
 
         $selectedAgent = RouterAgent::make()
+            ->withChatHistory($this->history)
             ->structured(
                 new UserMessage(str_replace('{query}', $state->get('query'), Prompts::CHOOSE_AGENT_INSTRUCTIONS)),
                 SelectedAgent::class
