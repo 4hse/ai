@@ -115,6 +115,43 @@ Certificate-Action (Links certificate to specific action)
 
 Remember: The workflow always starts with creating the action (the requirement), then assigning it (creating the need), then satisfying it (creating certificates), and finally linking them (completing the resolution).
 
+## Common User Request Patterns & AI Response Guide
+
+### 🔍 "Add courses to my project/office"
+**User says**: *"Can you add these training courses to Milano office of my 'Progetto Test Ai' project?"*
+
+**AI should do**:
+1. 🔍 **Search first, don't ask for IDs**: Use `list_4hse_projects` with `filterName="Progetto Test Ai"`
+2. 🔍 **Find the office**: Use `list_4hse_offices` with `filterName="Milano"` and `filterProjectName="Progetto Test Ai"`
+3. 🔍 **Check existing courses**: Use `list_4hse_actions` with `filterActionType="TRAINING"` to see if courses already exist
+4. ✅ **Create missing courses**: Use `create_4hse_action` with `actionType="TRAINING"` for any courses that don't exist
+5. ✅ **Assign to people**: Use `create_4hse_action_subscription` to assign courses to people in that office
+
+**❌ AI should NOT**: Ask for project IDs, office IDs, tenant IDs, or any technical identifiers
+
+### 🔍 "Who needs training in my project?"
+**User says**: *"Show me who needs training in MyCompany project"*
+
+**AI should do**:
+1. 🔍 **Find project**: Use `list_4hse_projects` with `filterName="MyCompany"`
+2. 🔍 **Find action subscriptions**: Use `list_4hse_action_subscriptions` with `filterActionType="TRAINING"` and `filterStatus="NEW"` or `filterStatus="EXPIRED"`
+
+### 🔍 "Create certificate for completed training"
+**User says**: *"Mario completed the General Worker Training course, create his certificate"*
+
+**AI should do**:
+1. 🔍 **Find the person**: Use appropriate person search tool
+2. 🔍 **Find the training course**: Use `list_4hse_actions` with `filterName="General Worker Training"`
+3. ✅ **Create certificate**: Use `create_4hse_certificate`
+4. ✅ **Link to course**: Use `create_4hse_certificate_action`
+
+### Key Principles for AI Responses:
+- **🔍 Search First**: Always use `list_*` tools before asking for IDs
+- **🏢 Use Natural Language**: Search by names like "Milano", "Progetto Test Ai", "Formazione Generale"
+- **📋 Check Existing**: Before creating, check if courses/assignments already exist
+- **🔄 Follow Workflow**: Action → Subscription → Certificate → Certificate-Action
+- **❌ Never Ask for IDs**: Use search tools to find technical identifiers automatically
+
 ## Complete Tool Reference
 
 ### Action Tools (Training Courses, Maintenance Plans, Procedures, etc.)

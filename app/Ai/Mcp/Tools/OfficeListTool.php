@@ -39,7 +39,7 @@ class OfficeListTool
     #[
         McpTool(
             name: "list_4hse_offices",
-            description: "List company offices and locations in 4HSE. Use this to find offices by name, code, address, project, type. Filter by office name, code, street, locality, region, country, tax code, VAT, project name, project type. Requires OAuth2 authentication.",
+            description: "Search and find company offices and locations in 4HSE by name. ALWAYS use this tool first when you need an office/location ID - search by office name instead of asking the user for IDs. Use this to find offices like 'Milano', 'Roma', 'Sede Centrale', etc. Filter by office name, project name, or location details to get office information including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listOffices(
@@ -60,7 +60,10 @@ class OfficeListTool
         ?string $filterProjectId = null,
 
         #[
-            Schema(type: "string", description: "Filter by office name"),
+            Schema(
+                type: "string",
+                description: "Filter by office name - use this to search for offices like 'Milano', 'Roma', 'Sede Centrale', etc. instead of asking user for office IDs",
+            ),
         ]
         ?string $filterName = null,
 
@@ -113,7 +116,10 @@ class OfficeListTool
         ?string $filterCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by project name"),
+            Schema(
+                type: "string",
+                description: "Filter by project name - use this to find offices within a specific project like 'Progetto Test Ai', 'MyCompany', etc.",
+            ),
         ]
         ?string $filterProjectName = null,
 

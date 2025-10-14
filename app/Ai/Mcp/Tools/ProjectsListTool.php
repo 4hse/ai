@@ -9,6 +9,12 @@ use Throwable;
 
 /**
  * Tool for listing 4HSE projects
+ *
+ * AI BEHAVIOR REMINDER:
+ * - ALWAYS use this tool FIRST when user mentions project names
+ * - Search by filterName instead of asking user for project IDs
+ * - Use partial matches: "Progetto Test" will find "Progetto Test Ai"
+ * - Never ask "What's your project ID?" - ask "What's your project name?"
  */
 class ProjectsListTool
 {
@@ -27,14 +33,14 @@ class ProjectsListTool
     #[
         McpTool(
             name: "list_4hse_projects",
-            description: "Retrieves a paginated list of 4HSE projects with optional filters. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE projects by name. ALWAYS use this tool first when you need a project ID - search by project name instead of asking the user for IDs. Use this to find projects like 'Progetto Test Ai', 'MyCompany', etc. Filter by name to get project details including IDs, tenant info, and office associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listProjects(
         #[
             Schema(
                 type: "string",
-                description: "Filter projects by name (partial match)",
+                description: "Filter projects by name (partial match) - use this to search for projects like 'Progetto Test Ai', 'MyCompany', etc. instead of asking user for project IDs",
             ),
         ]
         ?string $filterName = null,

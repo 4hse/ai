@@ -35,14 +35,14 @@ class ActionListTool
     #[
         McpTool(
             name: "list_4hse_actions",
-            description: "Retrieves a paginated list of 4HSE actions (training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans) with optional filters. Use this to find existing training courses and other actions in the system. Requires OAuth2 authentication.",
+            description: "Search and find existing 4HSE actions (training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans). ALWAYS use this tool first to check if training courses already exist before creating new ones. Search by name to find courses like 'Formazione Generale dei Lavoratori', 'Corso Antincendio', 'Primo Soccorso', etc. Filter by action type (TRAINING for courses) and name to get action details including IDs. Requires OAuth2 authentication.",
         ),
     ]
     public function listActions(
         #[
             Schema(
                 type: "string",
-                description: "Filter by action ID (UUID format)",
+                description: "Filter by action ID (UUID format) - usually not needed, search by name instead",
             ),
         ]
         ?string $filterActionId = null,
@@ -62,7 +62,10 @@ class ActionListTool
         ?string $filterCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by action name"),
+            Schema(
+                type: "string",
+                description: "Filter by action name - use this to search for training courses like 'Formazione Generale dei Lavoratori', 'Corso Antincendio', 'Primo Soccorso', etc. instead of asking user for action IDs",
+            ),
         ]
         ?string $filterName = null,
 

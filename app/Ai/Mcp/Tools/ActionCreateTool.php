@@ -9,6 +9,13 @@ use Throwable;
 
 /**
  * Tool for creating a new 4HSE action
+ *
+ * AI BEHAVIOR REMINDER:
+ * - ALWAYS check if training courses already exist using list_4hse_actions FIRST
+ * - Only create new actions if they don't exist
+ * - For training courses, use actionType="TRAINING"
+ * - Don't ask for tenant/subtenant IDs - search for projects/offices by name first
+ * - Use natural language names: "Formazione Generale dei Lavoratori", "Corso Antincendio", etc.
  */
 class ActionCreateTool
 {
