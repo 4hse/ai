@@ -16,14 +16,14 @@ class McpServeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mcp:serve';
+    protected $signature = "mcp:serve";
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Start MCP server';
+    protected $description = "Start MCP server";
 
     /**
      * Execute the console command.
@@ -32,32 +32,38 @@ class McpServeCommand extends Command
     public function handle(): void
     {
         // Read environment mode (default: prod)
-        $mode = strtolower(getenv('MCP_MODE') ?: 'prod');
+        $mode = strtolower(getenv("MCP_MODE") ?: "prod");
 
         // Build server
         $server = Server::make()
-            ->withServerInfo('4HSE MCP Server', '1.0.0')
+            ->withServerInfo("4HSE MCP Server", "1.0.0")
             ->build();
 
-        // Discover MCP elements from app/Ai/Mcp/Tools
-        $mcpToolsPath = app_path('Ai/Mcp/Tools');
-        if (is_dir($mcpToolsPath)) {
-            $server->discover($mcpToolsPath);
-        }
+        $server->discover(
+            basePath: app_path(""),
+            scanDirs: ["Ai/Mcp/Tools"],
+            //excludeDirs: ['src/Tests'],
+            saveToCache: false,
+        );
 
         // Choose the transport
-        if ($mode === 'dev') {
+        if ($mode === "dev") {
             // Development mode: use STDIO
             fwrite(STDERR, "[INFO] Starting in DEV mode (STDIO transport)\n");
 
             $transport = new StdioServerTransport();
-
         } else {
-            $host = getenv('MCP_HTTP_HOST') ?: '127.0.0.1';
-            $port = getenv('MCP_HTTP_PORT') ?: '8080';
+            $host = getenv("MCP_HTTP_HOST") ?: "127.0.0.1";
+            $port = getenv("MCP_HTTP_PORT") ?: "8080";
             // Production mode: use HTTP Streamable
-            fwrite(STDERR, "[INFO] Starting in PROD mode (HTTP transport on $host:$port)\n");
-            fwrite(STDERR, "[INFO] OAuth2 authentication enabled via Keycloak\n");
+            fwrite(
+                STDERR,
+                "[INFO] Starting in PROD mode (HTTP transport on $host:$port)\n",
+            );
+            fwrite(
+                STDERR,
+                "[INFO] OAuth2 authentication enabled via Keycloak\n",
+            );
 
             $transport = new StreamableHttpServerTransport(
                 host: $host,
@@ -65,9 +71,7 @@ class McpServeCommand extends Command
                 enableJsonResponse: false,
                 stateless: false,
                 // Apply authentication middleware to all MCP requests
-                middlewares: [
-                    new ValidateMcpToken()
-                ]
+                middlewares: [new ValidateMcpToken()],
             );
         }
 
