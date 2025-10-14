@@ -36,7 +36,7 @@ class SubstanceListTool
     #[
         McpTool(
             name: "list_4hse_substances",
-            description: "List substances in 4HSE. Use this to find substances by name, code, description, office, project. Filter by substance properties, office, project details. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE substances by name, code, or description. ALWAYS use this tool first when you need a substance ID - search by substance name, code, or description instead of asking the user for substance IDs. Use this to find substances like 'Benzina', 'Acido solforico', 'Cloro', 'Ammoniaca', etc. Filter by name, code, description, office, or project to get substance details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listSubstances(
@@ -49,19 +49,25 @@ class SubstanceListTool
         ?string $filterOfficeSubstanceId = null,
 
         #[
-            Schema(type: "string", description: "Filter by substance code"),
+            Schema(
+                type: "string",
+                description: "Filter by substance code - use this to search for substances by code instead of asking user for substance IDs",
+            ),
         ]
         ?string $filterCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by substance name"),
+            Schema(
+                type: "string",
+                description: "Filter by substance name - use this to search for substances like 'Benzina', 'Acido solforico', 'Cloro', 'Ammoniaca', etc. instead of asking user for substance IDs",
+            ),
         ]
         ?string $filterName = null,
 
         #[
             Schema(
                 type: "string",
-                description: "Filter by substance description",
+                description: "Filter by substance description - use this to search for substances by description instead of asking user for substance IDs",
             ),
         ]
         ?string $filterDescription = null,

@@ -29,7 +29,7 @@ class AttachmentListTool
     #[
         McpTool(
             name: "list_4hse_attachments",
-            description: "List file attachments in 4HSE. Use this to find attachments by path, metadata, project. Filter by attachment properties, file paths, metadata keys and values. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE file attachments by filename, path, or metadata. ALWAYS use this tool first when you need attachment information - search by filename, path, or metadata instead of asking the user for attachment IDs. Use this to find attachments like 'documento.pdf', 'certificato.jpg', 'relazione_tecnica.docx', etc. Filter by searchText (filename/path), metadata keys/values, root path, or parent path to get attachment details including IDs and file information. Requires OAuth2 authentication.",
         ),
     ]
     public function listAttachments(
@@ -52,7 +52,7 @@ class AttachmentListTool
         #[
             Schema(
                 type: "string",
-                description: "Search text in attachment paths",
+                description: "Search text in attachment paths - use this to search for attachments by filename like 'documento.pdf', 'certificato.jpg', 'relazione_tecnica.docx', etc. instead of asking user for attachment IDs",
             ),
         ]
         ?string $searchText = null,

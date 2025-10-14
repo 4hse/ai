@@ -31,19 +31,22 @@ class CertificateListTool
     #[
         McpTool(
             name: "list_4hse_certificates",
-            description: "List certificates (attestati/certificati) that prove requirements have been satisfied. Certificates 'resolve' action subscription needs by establishing coverage periods for training courses, maintenance, procedures, etc. Use this to find certificates by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or to check expired/valid certificates. Filter by certificate name, action type, resource ID, warning status. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE certificates (attestati/certificati) by name or type. ALWAYS use this tool first when you need certificate information - search by certificate name or action type instead of asking the user for certificate IDs. Certificates prove requirements have been satisfied and establish coverage periods for training courses, maintenance, procedures, etc. Use this to find certificates like 'Attestato Primo Soccorso', 'Certificato Antincendio', training certificates, maintenance certificates, etc. Filter by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or warning status to get certificate details including IDs and validity periods. Requires OAuth2 authentication.",
         ),
     ]
     public function listCertificates(
         #[
-            Schema(type: "string", description: "Filter by certificate name"),
+            Schema(
+                type: "string",
+                description: "Filter by certificate name - use this to search for certificates like 'Attestato Primo Soccorso', 'Certificato Antincendio', etc. instead of asking user for certificate IDs",
+            ),
         ]
         ?string $filterName = null,
 
         #[
             Schema(
                 type: "string",
-                description: "Filter by action type",
+                description: "Filter by action type - use TRAINING for training certificates, HEALTH for health surveillance, MAINTENANCE for maintenance certificates, CHECK for procedure certificates, PER for individual protection certificates",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]

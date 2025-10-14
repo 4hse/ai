@@ -41,7 +41,7 @@ class WorkGroupListTool
     #[
         McpTool(
             name: "list_4hse_work_groups",
-            description: "List work groups and teams in 4HSE. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Use this to find work groups by name, code, office, project, type. Filter by work group name, code, office, project, type. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE work groups by name, code, or type. ALWAYS use this tool first when you need a work group ID - search by work group name, code, or type instead of asking the user for work group IDs. Work groups can represent homogeneous groups of similar workers, work phases in a process, or specific job roles/positions. Use this to find work groups like 'Operatori di macchina', 'Addetti alla manutenzione', 'Tecnici di laboratorio', etc. Filter by name, code, type, office, or project to get work group details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listWorkGroups(
@@ -54,12 +54,18 @@ class WorkGroupListTool
         ?string $filterWorkGroupId = null,
 
         #[
-            Schema(type: "string", description: "Filter by work group code"),
+            Schema(
+                type: "string",
+                description: "Filter by work group code - use this to search for work groups by code instead of asking user for work group IDs",
+            ),
         ]
         ?string $filterCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by work group name"),
+            Schema(
+                type: "string",
+                description: "Filter by work group name - use this to search for work groups like 'Operatori di macchina', 'Addetti alla manutenzione', 'Tecnici di laboratorio', etc. instead of asking user for work group IDs",
+            ),
         ]
         ?string $filterName = null,
 

@@ -40,7 +40,7 @@ class DemandListTool
     #[
         McpTool(
             name: "list_4hse_demands",
-            description: "List demands in 4HSE. Demands represent specific requirements or requests linking actions to resources (different from action-subscriptions). Use this to find demands by action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER), resource type, office, project. Filter by demand properties, actions, resources. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE demands by action name, resource name, or type. ALWAYS use this tool first when you need demand information - search by action name, resource name, or type instead of asking the user for demand IDs. Demands represent specific requirements or requests linking actions to resources (different from action-subscriptions). Use this to find demands for training courses, maintenance plans, procedures, etc. Filter by action name, resource name, action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER), resource type, office, or project to get demand details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listDemands(
@@ -110,22 +110,34 @@ class DemandListTool
         ?string $filterProjectId = null,
 
         #[
-            Schema(type: "string", description: "Filter by action code"),
+            Schema(
+                type: "string",
+                description: "Filter by action code - use this to search for demands by action code instead of asking user for demand IDs",
+            ),
         ]
         ?string $filterActionCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by action name"),
+            Schema(
+                type: "string",
+                description: "Filter by action name - use this to search for demands by action name like 'Formazione Generale', 'Primo Soccorso', etc. instead of asking user for demand IDs",
+            ),
         ]
         ?string $filterActionName = null,
 
         #[
-            Schema(type: "string", description: "Filter by resource code"),
+            Schema(
+                type: "string",
+                description: "Filter by resource code - use this to search for demands by resource code instead of asking user for demand IDs",
+            ),
         ]
         ?string $filterResourceCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by resource name"),
+            Schema(
+                type: "string",
+                description: "Filter by resource name - use this to search for demands by resource name instead of asking user for demand IDs",
+            ),
         ]
         ?string $filterResourceName = null,
 

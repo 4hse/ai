@@ -38,7 +38,7 @@ class WorkEnvironmentListTool
     #[
         McpTool(
             name: "list_4hse_work_environments",
-            description: "List work environments in 4HSE. Use this to find work environments by name, code, description, office, project, category. Filter by work environment properties, office, project details. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE work environments by name, code, or description. ALWAYS use this tool first when you need a work environment ID - search by work environment name, code, or description instead of asking the user for work environment IDs. Use this to find work environments like 'Ufficio', 'Magazzino', 'Laboratorio', 'Cantiere', 'Reparto produzione', etc. Filter by name, code, description, category, office, or project to get work environment details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listWorkEnvironments(
@@ -69,7 +69,7 @@ class WorkEnvironmentListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by work environment code",
+                description: "Filter by work environment code - use this to search for work environments by code instead of asking user for work environment IDs",
             ),
         ]
         ?string $filterCode = null,
@@ -77,7 +77,7 @@ class WorkEnvironmentListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by work environment name",
+                description: "Filter by work environment name - use this to search for work environments like 'Ufficio', 'Magazzino', 'Laboratorio', 'Cantiere', 'Reparto produzione', etc. instead of asking user for work environment IDs",
             ),
         ]
         ?string $filterName = null,
@@ -85,7 +85,7 @@ class WorkEnvironmentListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by work environment description",
+                description: "Filter by work environment description - use this to search for work environments by description instead of asking user for work environment IDs",
             ),
         ]
         ?string $filterDescription = null,

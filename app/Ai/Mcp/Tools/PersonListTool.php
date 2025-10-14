@@ -34,14 +34,14 @@ class PersonListTool
     #[
         McpTool(
             name: "list_4hse_persons",
-            description: "Retrieves a paginated list of 4HSE persons with optional filters. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE persons by name, code, or other criteria. ALWAYS use this tool first when you need a person ID - search by first name, last name, or code instead of asking the user for person IDs. Use this to find people like 'Mario Rossi', 'Giulia', employees, prevention personnel, etc. Filter by name, project, or role to get person details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listPersons(
         #[
             Schema(
                 type: "string",
-                description: "Filter persons by first name (partial match)",
+                description: "Filter persons by first name (partial match) - use this to search for people like 'Mario', 'Giulia', etc. instead of asking user for person IDs",
             ),
         ]
         ?string $filterFirstName = null,
@@ -49,13 +49,16 @@ class PersonListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter persons by last name (partial match)",
+                description: "Filter persons by last name (partial match) - use this to search for people like 'Rossi', 'Bianchi', etc. instead of asking user for person IDs",
             ),
         ]
         ?string $filterLastName = null,
 
         #[
-            Schema(type: "string", description: "Filter persons by code"),
+            Schema(
+                type: "string",
+                description: "Filter persons by code - use this to search for people by their employee code instead of asking user for person IDs",
+            ),
         ]
         ?string $filterCode = null,
 

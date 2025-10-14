@@ -38,7 +38,7 @@ class EquipmentListTool
     #[
         McpTool(
             name: "list_4hse_equipment",
-            description: "List equipment in 4HSE. Use this to find equipment by name, code, description, office, project, category. Filter by equipment properties, office, project details. Requires OAuth2 authentication.",
+            description: "Search and find 4HSE equipment by name, code, or description. ALWAYS use this tool first when you need equipment ID - search by equipment name, code, or description instead of asking the user for equipment IDs. Use this to find equipment like 'Compressore', 'Gru mobile', 'Estintore', etc. Filter by name, code, category, office, or project to get equipment details including IDs and associations. Requires OAuth2 authentication.",
         ),
     ]
     public function listEquipment(
@@ -75,19 +75,25 @@ class EquipmentListTool
         ?string $filterEquipmentId = null,
 
         #[
-            Schema(type: "string", description: "Filter by equipment code"),
+            Schema(
+                type: "string",
+                description: "Filter by equipment code - use this to search for equipment by code instead of asking user for equipment IDs",
+            ),
         ]
         ?string $filterCode = null,
 
         #[
-            Schema(type: "string", description: "Filter by equipment name"),
+            Schema(
+                type: "string",
+                description: "Filter by equipment name - use this to search for equipment like 'Compressore', 'Gru mobile', 'Estintore', etc. instead of asking user for equipment IDs",
+            ),
         ]
         ?string $filterName = null,
 
         #[
             Schema(
                 type: "string",
-                description: "Filter by equipment description",
+                description: "Filter by equipment description - use this to search for equipment by description instead of asking user for equipment IDs",
             ),
         ]
         ?string $filterDescription = null,
