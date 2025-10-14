@@ -14,6 +14,7 @@ use NeuronAI\Chat\History\ChatHistoryInterface;
 use App\Ai\Agents\RouterAgent;
 use App\Ai\Schema\SelectedAgent;
 use App\Ai\Prompts;
+use Throwable;
 
 class RouterNode extends Node
 {
@@ -23,6 +24,7 @@ class RouterNode extends Node
     }
 
     /**
+     * @throws Throwable
      */
     public function __invoke(StartEvent $event, WorkflowState $state): Generator|SelectedAgentEvent
     {
@@ -32,12 +34,18 @@ class RouterNode extends Node
 
         yield new ProgressEvent("Choosing the agent...");
 
-        $selectedAgent = RouterAgent::make()
-            ->withChatHistory($this->history)
-            ->structured(
-                new UserMessage(str_replace('{query}', $state->get('query'), Prompts::CHOOSE_AGENT_INSTRUCTIONS)),
-                SelectedAgent::class
-            );
+        $routerAgent = RouterAgent::make();
+        $messages = $this->history->getMessages();
+
+        if ($messages) {
+            Log::debug('RouterNode loading messages', ['messages' => $messages]);
+            $routerAgent->chat($messages);
+        }
+
+        $selectedAgent = $routerAgent->structured(
+            new UserMessage(str_replace('{query}', $state->get('query'), Prompts::CHOOSE_AGENT_INSTRUCTIONS)),
+            SelectedAgent::class
+        );
 
         Log::info('Agent selected by router', [
             'agent' => $selectedAgent->agentName,

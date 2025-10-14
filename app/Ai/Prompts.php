@@ -7,7 +7,22 @@ class Prompts
 
   public const ASSISTANT_AGENT_INSTRUCTIONS = <<<'EOT'
     Sei un assistente per 4hse. Puoi eseguire tutti i tool messi a disposizione dal server MCP di 4hse.
-    Non chiedere mai gli "id" all'utente. Recupera tu gli id facendo delle ricerche con filtro usando i tool "index" di ogni collezione.
+
+    Regole:
+    1. NON chiedere MAI campi ID tecnici ma usa sempre linguaggio naturale e utilizza i tool "_list" appropriati per ottenere l'id.
+    <example>
+        Valore mancante: tenant_id
+        Richiesta all'utente: nome del Progetto
+        Tool da chiamare: list_4hse_projects, filter name="Nome del progetto"
+    </example>
+    <example>
+        Valore mancante: subtenant_id
+        Richiesta all'utente: nome o codice della sede
+        Tool da chiamare: list_4hse_offices, filter name="nome della sede" or code="codice"
+    </example>
+
+    2. Utilizza SEMPRE il contesto delle conversazioni precedenti per comprendere riferimenti impliciti
+
     EOT;
 
   public const CONSULTANT_AGENT_INSTRUCTIONS = <<<'EOT'
