@@ -2,7 +2,6 @@
 
 namespace App\Ai\Agents;
 
-
 use NeuronAI\MCP\McpConnector;
 use App\Ai\Prompts;
 use Exception;
@@ -16,12 +15,9 @@ use App\Ai\Providers;
  */
 class AssistantAgent extends Agent
 {
-    static string $name = 'assistant';
+    static string $name = "assistant";
 
-    public function __construct(
-        private readonly ?string $bearerToken = null
-    ) {
-    }
+    public function __construct(private readonly ?string $bearerToken = null) {}
 
     /**
      * @throws Exception
@@ -30,14 +26,14 @@ class AssistantAgent extends Agent
     {
         $headers = [];
         if ($this->bearerToken) {
-            $headers['Authorization'] = 'Bearer ' . $this->bearerToken;
+            $headers["Authorization"] = "Bearer " . $this->bearerToken;
         }
 
         return [
             ...McpConnector::make([
-                'url' => getenv('MCP_SERVER_URL'),
-                'timeout' => 30,
-                'headers' => $headers
+                "url" => getenv("MCP_SERVER_URL"),
+                "timeout" => 30,
+                "headers" => $headers,
             ])->tools(),
         ];
     }
@@ -47,15 +43,13 @@ class AssistantAgent extends Agent
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider('gemini-2.5-flash');
+        return Providers::getProvider("bedrock.claude-3-sonnet-20240229-v1:0");
     }
 
     public function instructions(): string
     {
         return (string) new SystemPrompt(
-            background: [
-                Prompts::ASSISTANT_AGENT_INSTRUCTIONS
-            ],
+            background: [Prompts::ASSISTANT_AGENT_INSTRUCTIONS],
         );
     }
 }

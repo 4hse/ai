@@ -14,22 +14,20 @@ use App\Ai\Providers;
  */
 class ConsultantAgent extends Agent
 {
-    static string $name = 'consultant';
+    static string $name = "consultant";
 
     /**
      * @throws Exception
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider('gemini-2.5-flash');
+        return Providers::getProvider("gemini-2.5-flash");
     }
 
     public function instructions(): string
     {
         return (string) new SystemPrompt(
-            background: [
-                Prompts::CONSULTANT_AGENT_INSTRUCTIONS
-            ],
+            background: [Prompts::CONSULTANT_AGENT_INSTRUCTIONS],
         );
     }
 }

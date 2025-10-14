@@ -17,14 +17,14 @@ use App\Ai\EmbeddingsProviders;
  */
 class GuideAgent extends RAG
 {
-    static string $name = 'guide';
+    static string $name = "guide";
 
     /**
      * @throws Exception
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider('gemini-2.5-flash');
+        return Providers::getProvider("gemini-2.5-flash");
     }
 
     /**
@@ -32,7 +32,7 @@ class GuideAgent extends RAG
      */
     protected function embeddings(): EmbeddingsProviderInterface
     {
-        return EmbeddingsProviders::getProvider('gemini-embedding-001');
+        return EmbeddingsProviders::getProvider("gemini-embedding-001");
     }
 
     /**
@@ -40,9 +40,6 @@ class GuideAgent extends RAG
      */
     protected function vectorStore(): VectorStoreInterface
     {
-        return new FileVectorStore(
-            directory: storage_path('ai'),
-            name: 'docs'
-        );
+        return new FileVectorStore(directory: storage_path("ai"), name: "docs");
     }
 }

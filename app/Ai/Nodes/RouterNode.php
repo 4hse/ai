@@ -18,38 +18,47 @@ use Throwable;
 
 class RouterNode extends Node
 {
-
-    public function __construct(protected ChatHistoryInterface $history)
-    {
-    }
+    public function __construct(protected ChatHistoryInterface $history) {}
 
     /**
      * @throws Throwable
      */
-    public function __invoke(StartEvent $event, WorkflowState $state): Generator|SelectedAgentEvent
-    {
-        Log::debug('RouterNode started', [
-            'query' => $state->get('query')
+    public function __invoke(
+        StartEvent $event,
+        WorkflowState $state,
+    ): Generator|SelectedAgentEvent {
+        Log::debug("RouterNode started", [
+            "query" => $state->get("query"),
         ]);
 
         yield new ProgressEvent("Choosing the agent...");
 
         $routerAgent = RouterAgent::make();
-        $messages = $this->history->getMessages();
 
+        /*
+        $messages = $this->history->getMessages();
         if ($messages) {
-            Log::debug('RouterNode loading messages', ['messages' => $messages]);
+            Log::debug("RouterNode loading messages", [
+                "messages" => $messages,
+            ]);
             $routerAgent->chat($messages);
         }
+        */
 
         $selectedAgent = $routerAgent->structured(
-            new UserMessage(str_replace('{query}', $state->get('query'), Prompts::CHOOSE_AGENT_INSTRUCTIONS)),
-            SelectedAgent::class
+            new UserMessage(
+                str_replace(
+                    "{query}",
+                    $state->get("query"),
+                    Prompts::CHOOSE_AGENT_INSTRUCTIONS,
+                ),
+            ),
+            SelectedAgent::class,
         );
 
-        Log::info('Agent selected by router', [
-            'agent' => $selectedAgent->agentName,
-            'reasoning' => $selectedAgent->reasoning ?? 'N/A'
+        Log::info("Agent selected by router", [
+            "agent" => $selectedAgent->agentName,
+            "reasoning" => $selectedAgent->reasoning ?? "N/A",
         ]);
 
         yield new ProgressEvent("Selected agent: $selectedAgent->agentName");

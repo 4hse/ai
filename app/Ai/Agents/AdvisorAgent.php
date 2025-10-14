@@ -19,14 +19,14 @@ use NeuronAI\SystemPrompt;
  */
 class AdvisorAgent extends RAG
 {
-    static string $name = 'advisor';
+    static string $name = "advisor";
 
     /**
      * @throws Exception
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider('gemini-2.5-flash');
+        return Providers::getProvider("gemini-2.5-flash");
     }
 
     /**
@@ -34,7 +34,7 @@ class AdvisorAgent extends RAG
      */
     protected function embeddings(): EmbeddingsProviderInterface
     {
-        return EmbeddingsProviders::getProvider('gemini-embedding-001');
+        return EmbeddingsProviders::getProvider("gemini-embedding-001");
     }
 
     /**
@@ -42,18 +42,13 @@ class AdvisorAgent extends RAG
      */
     protected function vectorStore(): VectorStoreInterface
     {
-        return new FileVectorStore(
-            directory: storage_path('ai'),
-            name: 'www'
-        );
+        return new FileVectorStore(directory: storage_path("ai"), name: "www");
     }
 
     public function instructions(): string
     {
         return (string) new SystemPrompt(
-            background: [
-                Prompts::ADVISOR_AGENT_INSTRUCTIONS
-            ],
+            background: [Prompts::ADVISOR_AGENT_INSTRUCTIONS],
         );
     }
 }
