@@ -14,26 +14,28 @@ class DemandCreateTool
 {
     /**
      * Create a new demand in 4HSE.
+     * Demands represent specific requirements or requests linking an action to a resource.
+     * This is similar to action-subscriptions but represents a different type of requirement relationship.
      * Requires OAuth2 authentication.
      *
-     * @param string $actionId Action ID (UUID)
-     * @param string $actionType Action type
-     * @param string $resourceId Resource ID (UUID)
-     * @param string $resourceType Resource type
+     * @param string $actionId Action ID (UUID) - the action being demanded
+     * @param string $actionType Action type - type of action being demanded
+     * @param string $resourceId Resource ID (UUID) - the resource for which the action is demanded
+     * @param string $resourceType Resource type - type of resource the demand applies to
      * @param string|null $data Additional data in JSON format
      * @return array Created demand details
      */
     #[
         McpTool(
             name: "create_4hse_demand",
-            description: "Creates a new demand in 4HSE. Links an action with a resource to create a requirement or request. Requires OAuth2 authentication.",
+            description: "Creates a new demand in 4HSE. Demands represent specific requirements or requests linking an action to a resource. This creates a different type of requirement relationship than action-subscriptions. Use this to create demands for maintenance, training, or other actions on specific resources. Requires OAuth2 authentication.",
         ),
     ]
     public function createDemand(
         #[
             Schema(
                 type: "string",
-                description: "Action ID in UUID format (required)",
+                description: "Action ID in UUID format (required) - the training course, maintenance plan, procedure, etc. being demanded",
             ),
         ]
         string $actionId,
@@ -41,7 +43,7 @@ class DemandCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Action type (required)",
+                description: "Action type (required) - must match the type of action being demanded: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]
@@ -50,7 +52,7 @@ class DemandCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Resource ID in UUID format (required)",
+                description: "Resource ID in UUID format (required) - the person, equipment, or other resource for which the action is being demanded",
             ),
         ]
         string $resourceId,
@@ -58,7 +60,7 @@ class DemandCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Resource type (required)",
+                description: "Resource type (required) - what type of resource the demand applies to",
                 enum: [
                     "MATERIAL_ITEM",
                     "ROLE",

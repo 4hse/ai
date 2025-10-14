@@ -8,16 +8,17 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE actions
+ * Tool for listing 4HSE actions (training courses, maintenance plans, procedures, etc.)
  */
 class ActionListTool
 {
     /**
      * List 4HSE actions with optional filters.
+     * Actions represent training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterActionId Filter by action ID (UUID)
-     * @param string|null $filterActionType Filter by action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER)
+     * @param string|null $filterActionType Filter by action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
      * @param string|null $filterCode Filter by action code
      * @param string|null $filterName Filter by action name
      * @param string|null $filterSubtenantId Filter by subtenant ID (UUID)
@@ -34,7 +35,7 @@ class ActionListTool
     #[
         McpTool(
             name: "list_4hse_actions",
-            description: "Retrieves a paginated list of 4HSE actions with optional filters. Requires OAuth2 authentication.",
+            description: "Retrieves a paginated list of 4HSE actions (training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans) with optional filters. Use this to find existing training courses and other actions in the system. Requires OAuth2 authentication.",
         ),
     ]
     public function listActions(
@@ -49,7 +50,7 @@ class ActionListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by action type",
+                description: "Filter by action type: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance plans, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]

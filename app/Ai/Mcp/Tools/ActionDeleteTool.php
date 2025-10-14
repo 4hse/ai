@@ -8,26 +8,34 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for deleting a 4HSE action
+ * Tool for deleting a 4HSE action (training course, maintenance plan, procedure, etc.)
  */
 class ActionDeleteTool
 {
     /**
      * Delete an action from 4HSE.
+     * Actions represent training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans.
+     * WARNING: This will permanently remove the action and potentially all related subscriptions and certificates.
      * Requires OAuth2 authentication.
      *
-     * @param int $id Action ID
+     * @param int $id Action ID - the ID of the training course, maintenance plan, procedure, etc. to delete
      * @param bool $force Force deletion of the entity and all related entities.
      * @return array Deletion result
      */
     #[
         McpTool(
             name: "delete_4hse_action",
-            description: "Deletes an action in 4HSE. Requires OAuth2 authentication.",
+            description: "Deletes an action in 4HSE (training course, maintenance plan, procedure, individual protection plan, or health surveillance plan). WARNING: This permanently removes the action and potentially all related subscriptions and certificates. Use with caution. Requires OAuth2 authentication.",
         ),
     ]
     public function deleteAction(
-        #[Schema(type: "integer", description: "Action ID")] int $id,
+        #[
+            Schema(
+                type: "integer",
+                description: "Action ID - the ID of the training course, maintenance plan, procedure, etc. to delete",
+            ),
+        ]
+        int $id,
 
         #[
             Schema(

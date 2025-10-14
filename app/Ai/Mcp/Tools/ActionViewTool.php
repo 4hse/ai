@@ -8,12 +8,13 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for viewing a single 4HSE action
+ * Tool for viewing a single 4HSE action (training course, maintenance plan, procedure, etc.)
  */
 class ActionViewTool
 {
     /**
      * Get a single action by ID.
+     * Actions represent training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans.
      * Requires OAuth2 authentication.
      *
      * @param int $id Action ID
@@ -22,11 +23,17 @@ class ActionViewTool
     #[
         McpTool(
             name: "view_4hse_action",
-            description: "Retrieves a single 4HSE action by ID. Requires OAuth2 authentication.",
+            description: "Retrieves a single 4HSE action (training course, maintenance plan, procedure, individual protection plan, or health surveillance plan) by ID. Use this to get detailed information about a specific action. Requires OAuth2 authentication.",
         ),
     ]
     public function viewAction(
-        #[Schema(type: "integer", description: "Action ID")] int $id,
+        #[
+            Schema(
+                type: "integer",
+                description: "Action ID - the ID of the training course, maintenance plan, procedure, etc. to retrieve",
+            ),
+        ]
+        int $id,
     ): array {
         try {
             // Get bearer token from app container (set by MCP middleware)

@@ -8,29 +8,31 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for deleting a 4HSE certificate action
+ * Tool for deleting a 4HSE certificate action (a "link" - association between certificate and specific action)
  */
 class CertificateActionDeleteTool
 {
     /**
      * Delete a certificate action from 4HSE.
+     * Certificate-action associations link certificates to specific actions, establishing which action requirement the certificate satisfies.
+     * WARNING: This will permanently remove the link between certificate and action.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Certificate action ID (UUID)
+     * @param string $id Certificate action ID (UUID) - the specific link between certificate and action to delete
      * @param bool $force Force deletion of the entity and all related entities.
      * @return array Deletion result
      */
     #[
         McpTool(
             name: "delete_4hse_certificate_action",
-            description: "Deletes a certificate-action association in 4HSE. Removes the link between a certificate and an action. Requires OAuth2 authentication.",
+            description: "Deletes a certificate-action association in 4HSE (a 'link' that specifies which action requirement a certificate satisfies). WARNING: This permanently removes the link between certificate and action, which may affect requirement compliance tracking. Use with caution. Requires OAuth2 authentication.",
         ),
     ]
     public function deleteCertificateAction(
         #[
             Schema(
                 type: "string",
-                description: "Certificate action ID (UUID format)",
+                description: "Certificate action ID (UUID format) - the ID of the specific link between certificate and action to delete",
             ),
         ]
         string $id,

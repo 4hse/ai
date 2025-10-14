@@ -8,18 +8,20 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE demands
+ * Tool for listing 4HSE demands (alternative requirement relationships, different from action-subscriptions)
  */
 class DemandListTool
 {
     /**
      * List 4HSE demands with optional filters.
+     * Demands represent specific requirements or requests linking actions to resources.
+     * This is a different type of requirement relationship than action-subscriptions.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterDemandId Filter by demand ID
      * @param string|null $filterActionId Filter by action ID
-     * @param string|null $filterActionType Filter by action type
-     * @param string|null $filterResourceId Filter by resource ID
+     * @param string|null $filterActionType Filter by action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
+     * @param string|null $filterResourceType Filter by resource type - what type of resource the demand applies to
      * @param string|null $filterResourceType Filter by resource type
      * @param string|null $filterOfficeId Filter by office ID
      * @param string|null $filterProjectId Filter by project ID
@@ -38,7 +40,7 @@ class DemandListTool
     #[
         McpTool(
             name: "list_4hse_demands",
-            description: "List demands in 4HSE. Use this to find demands by action type, resource type, office, project. Filter by demand properties, actions, resources. Requires OAuth2 authentication.",
+            description: "List demands in 4HSE. Demands represent specific requirements or requests linking actions to resources (different from action-subscriptions). Use this to find demands by action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER), resource type, office, project. Filter by demand properties, actions, resources. Requires OAuth2 authentication.",
         ),
     ]
     public function listDemands(

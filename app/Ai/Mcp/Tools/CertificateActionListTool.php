@@ -8,20 +8,22 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE certificate actions
+ * Tool for listing 4HSE certificate actions (the "links" - associations between certificates and specific actions)
  */
 class CertificateActionListTool
 {
     /**
      * List 4HSE certificate actions with optional filters.
+     * Certificate-action associations link certificates to specific actions, establishing which action requirement the certificate satisfies.
+     * This completes the workflow: Action → Action-Subscription (need) → Certificate → Certificate-Action (resolution).
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterCertificateActionId Filter by certificate action ID
      * @param string|null $filterCertificateId Filter by certificate ID
-     * @param string|null $filterActionId Filter by action ID
+     * @param string|null $filterActionId Filter by action ID - the specific training course, maintenance plan, procedure, etc.
      * @param string|null $filterActionName Filter by action name
      * @param string|null $filterActionCode Filter by action code
-     * @param string|null $filterActionType Filter by action type
+     * @param string|null $filterActionType Filter by action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
      * @param string|null $filterResourceId Filter by resource ID
      * @param string|null $filterCertificateName Filter by certificate name
      * @param string|null $filterOfficeName Filter by office name
@@ -34,7 +36,7 @@ class CertificateActionListTool
     #[
         McpTool(
             name: "list_4hse_certificate_actions",
-            description: "List certificate-action associations in 4HSE. Use this to find which actions are linked to certificates, filter by certificate name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource type, office. View expiration dates and inherited dates. Requires OAuth2 authentication.",
+            description: "List certificate-action associations in 4HSE (the 'links' that specify which action requirements certificates satisfy). Certificate-action associations complete the workflow by linking certificates to specific training courses, maintenance plans, procedures, etc. Use this to find which actions are linked to certificates, filter by certificate name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource type, office. View expiration dates and inherited dates. Requires OAuth2 authentication.",
         ),
     ]
     public function listCertificateActions(

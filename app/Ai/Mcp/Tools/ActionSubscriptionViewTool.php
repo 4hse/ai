@@ -8,28 +8,30 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for viewing a single 4HSE action subscription
+ * Tool for viewing a single 4HSE action subscription (a "need" - assignment of requirement to person/resource)
  */
 class ActionSubscriptionViewTool
 {
     /**
      * Get a single action subscription by ID.
+     * Action subscriptions represent the "need" - they link a person or resource to an action requirement.
+     * They create requirements that must later be satisfied by certificates.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Action subscription ID (UUID)
+     * @param string $id Action subscription ID (UUID) - the specific need/assignment to retrieve
      * @return array Action subscription details
      */
     #[
         McpTool(
             name: "view_4hse_action_subscription",
-            description: "Retrieves a single 4HSE action subscription by ID. Requires OAuth2 authentication.",
+            description: "Retrieves a single 4HSE action subscription by ID. Action subscriptions represent the 'need' - the assignment of a training course, maintenance plan, procedure, etc. to a person or resource. Use this to get detailed information about a specific requirement assignment. Requires OAuth2 authentication.",
         ),
     ]
     public function viewActionSubscription(
         #[
             Schema(
                 type: "string",
-                description: "Action subscription ID (UUID format)",
+                description: "Action subscription ID (UUID format) - the ID of the specific need/assignment to retrieve",
             ),
         ]
         string $id,

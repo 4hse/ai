@@ -8,28 +8,30 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for viewing a single 4HSE certificate action
+ * Tool for viewing a single 4HSE certificate action (a "link" - association between certificate and specific action)
  */
 class CertificateActionViewTool
 {
     /**
      * Get a single certificate action by ID.
+     * Certificate-action associations link certificates to specific actions, establishing which action requirement the certificate satisfies.
+     * This completes the workflow: Action → Action-Subscription (need) → Certificate → Certificate-Action (resolution).
      * Requires OAuth2 authentication.
      *
-     * @param string $id Certificate action ID (UUID)
+     * @param string $id Certificate action ID (UUID) - the specific link between certificate and action to retrieve
      * @return array Certificate action details
      */
     #[
         McpTool(
             name: "view_4hse_certificate_action",
-            description: "Retrieves a single 4HSE certificate-action association by ID. View complete details including action name, certificate name, expiration dates, resource type, office. Requires OAuth2 authentication.",
+            description: "Retrieves a single 4HSE certificate-action association by ID (a 'link' that specifies which action requirement a certificate satisfies). Certificate-action associations complete the workflow by linking certificates to specific training courses, maintenance plans, procedures, etc. View complete details including action name, certificate name, expiration dates, resource type, office. Requires OAuth2 authentication.",
         ),
     ]
     public function viewCertificateAction(
         #[
             Schema(
                 type: "string",
-                description: "Certificate action ID (UUID format)",
+                description: "Certificate action ID (UUID format) - the ID of the specific link between certificate and action to retrieve",
             ),
         ]
         string $id,

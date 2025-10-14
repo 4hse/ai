@@ -8,12 +8,14 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE certificate
+ * Tool for updating an existing 4HSE certificate (a "resolution" - proof that a requirement has been satisfied)
  */
 class CertificateUpdateTool
 {
     /**
      * Update an existing certificate in 4HSE.
+     * Certificates "resolve" action subscription needs by proving that requirements have been satisfied.
+     * They establish the coverage period for specific action types for people or resources.
      * Requires OAuth2 authentication.
      *
      * @param string $id Certificate ID (UUID)
@@ -33,14 +35,14 @@ class CertificateUpdateTool
     #[
         McpTool(
             name: "update_4hse_certificate",
-            description: "Updates an existing certificate in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing certificate in 4HSE. Certificates 'resolve' action subscription needs by proving that requirements have been satisfied (e.g., training completed, maintenance performed). Use this to modify certificate details, dates, or coverage periods. Requires OAuth2 authentication.",
         ),
     ]
     public function updateCertificate(
         #[
             Schema(
                 type: "string",
-                description: "Certificate ID in UUID format (required)",
+                description: "Certificate ID (UUID format, required) - the ID of the specific certificate to update",
             ),
         ]
         string $id,
@@ -77,7 +79,7 @@ class CertificateUpdateTool
         #[
             Schema(
                 type: "string",
-                description: "Action type",
+                description: "Action type: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance plans, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]
@@ -86,7 +88,7 @@ class CertificateUpdateTool
         #[
             Schema(
                 type: "string",
-                description: "Resource ID in UUID format: ID of the person, material, equipment, etc. the certificate is for",
+                description: "Resource ID (UUID format): ID of the person, material, equipment, etc. that this certificate is issued to (the one who completed training, received maintenance, etc.)",
             ),
         ]
         ?string $resourceId = null,

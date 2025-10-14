@@ -14,11 +14,13 @@ class ActionSubscriptionCreateTool
 {
     /**
      * Create a new action subscription in 4HSE.
+     * Action subscriptions represent the "need" - they link a person or material resource to an action requirement.
+     * This creates the requirement that must later be satisfied by a certificate.
      * Requires OAuth2 authentication.
      *
-     * @param string $actionId Action ID (UUID)
-     * @param string $subscriberId Subscriber ID (UUID)
-     * @param string $subscriberType Subscriber type
+     * @param string $actionId Action ID (UUID) - the training course, maintenance plan, etc. that is required
+     * @param string $subscriberId Subscriber ID (UUID) - the person or resource that needs this action
+     * @param string $subscriberType Subscriber type - what type of resource needs this action
      * @param string $subtenantId Subtenant ID (UUID)
      * @param string $tenantId Tenant ID (UUID)
      * @param array|null $data Additional data (JSON object)
@@ -27,14 +29,14 @@ class ActionSubscriptionCreateTool
     #[
         McpTool(
             name: "create_4hse_action_subscription",
-            description: "Creates a new action subscription in 4HSE. Requires OAuth2 authentication.",
+            description: "Creates a new action subscription in 4HSE. This represents a 'need' - linking a person or material resource to an action requirement (like assigning a training course to a person). The subscription creates the requirement that must later be satisfied by a certificate. Requires OAuth2 authentication.",
         ),
     ]
     public function createActionSubscription(
         #[
             Schema(
                 type: "string",
-                description: "Action ID in UUID format (required)",
+                description: "Action ID in UUID format (required) - the training course, maintenance plan, procedure, etc. that is required",
             ),
         ]
         string $actionId,
@@ -42,7 +44,7 @@ class ActionSubscriptionCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Subscriber ID in UUID format (required)",
+                description: "Subscriber ID in UUID format (required) - the person, equipment, or other resource that needs this action",
             ),
         ]
         string $subscriberId,
@@ -50,7 +52,7 @@ class ActionSubscriptionCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Subscriber type (required)",
+                description: "Subscriber type (required) - what type of resource needs this action",
                 enum: [
                     "PERSON",
                     "MATERIAL_ITEM",

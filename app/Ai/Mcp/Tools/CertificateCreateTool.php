@@ -14,14 +14,16 @@ class CertificateCreateTool
 {
     /**
      * Create a new certificate in 4HSE.
+     * Certificates "resolve" action subscription needs by proving that a requirement has been satisfied.
+     * They establish the coverage period for a specific action type for a person or resource.
      * Requires OAuth2 authentication.
      *
-     * @param string $dateRelease Release date (format: YYYY-MM-DD)
+     * @param string $dateRelease Release date (format: YYYY-MM-DD) - when the certificate was issued
      * @param string $name Certificate name
-     * @param string $actionType Action type
-     * @param string $resourceId Resource ID
+     * @param string $actionType Action type - must match the action type this certificate covers
+     * @param string $resourceId Resource ID - the person or resource this certificate is issued to
      * @param string $tenantId Tenant ID (UUID)
-     * @param string|null $dateExpire Expiration date (format: YYYY-MM-DD)
+     * @param string|null $dateExpire Expiration date (format: YYYY-MM-DD) - when certificate coverage ends
      * @param string|null $note Additional notes
      * @param array|null $data Additional data (JSON object)
      * @param int|null $warning Warning status (0 or 1)
@@ -32,7 +34,7 @@ class CertificateCreateTool
     #[
         McpTool(
             name: "create_4hse_certificate",
-            description: "Creates a new certificate in 4HSE. Requires OAuth2 authentication.",
+            description: "Creates a new certificate in 4HSE. Certificates 'resolve' action subscription needs by proving that a requirement has been satisfied (e.g., training completed, maintenance performed). They establish the coverage period for a specific action type for a person or resource. Use this tool to certify that someone has completed training or that maintenance has been performed. Requires OAuth2 authentication.",
         ),
     ]
     public function createCertificate(
@@ -55,7 +57,7 @@ class CertificateCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Action type (required)",
+                description: "Action type (required) - must match the type of action this certificate covers: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]
@@ -64,7 +66,7 @@ class CertificateCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Resource ID in UUID format (required): ID of the person, material, equipment, etc. the certificate is for",
+                description: "Resource ID in UUID format (required): ID of the person, material, equipment, etc. that this certificate is issued to (the one who completed training, received maintenance, etc.)",
             ),
         ]
         string $resourceId,

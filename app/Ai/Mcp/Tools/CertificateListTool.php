@@ -8,17 +8,19 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE certificates
+ * Tool for listing 4HSE certificates (the "resolutions" - proof that requirements have been satisfied)
  */
 class CertificateListTool
 {
     /**
      * List 4HSE certificates with optional filters.
+     * Certificates "resolve" action subscription needs by proving that requirements have been satisfied.
+     * They establish the coverage period for specific action types for people or resources.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterName Filter by certificate name
-     * @param string|null $filterActionType Filter by action type
-     * @param string|null $filterResourceId Filter by resource ID
+     * @param string|null $filterActionType Filter by action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
+     * @param string|null $filterResourceId Filter by resource ID - the person or resource the certificate is issued to
      * @param int|null $filterWarning Filter by warning status (0 or 1)
      * @param int $perPage Number of results per page (default: 20, max: 100)
      * @param int $page Page number (default: 1)
@@ -29,7 +31,7 @@ class CertificateListTool
     #[
         McpTool(
             name: "list_4hse_certificates",
-            description: "List certificates (attestati/certificati) for people, equipment, or materials. Use this to find certificates by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or to check expired/valid certificates. Filter by certificate name, action type, resource ID, warning status. Requires OAuth2 authentication.",
+            description: "List certificates (attestati/certificati) that prove requirements have been satisfied. Certificates 'resolve' action subscription needs by establishing coverage periods for training courses, maintenance, procedures, etc. Use this to find certificates by name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), resource, or to check expired/valid certificates. Filter by certificate name, action type, resource ID, warning status. Requires OAuth2 authentication.",
         ),
     ]
     public function listCertificates(

@@ -8,21 +8,23 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for listing 4HSE action subscriptions
+ * Tool for listing 4HSE action subscriptions (the "needs" - assignments of requirements to people/resources)
  */
 class ActionSubscriptionListTool
 {
     /**
      * List 4HSE action subscriptions with optional filters.
+     * Action subscriptions represent the "need" - they link people or resources to action requirements.
+     * They create requirements that must later be satisfied by certificates.
      * Requires OAuth2 authentication.
      *
      * @param string|null $filterActionSubscriptionId Filter by action subscription ID (UUID)
-     * @param string|null $filterActionId Filter by action ID (UUID)
-     * @param string|null $filterActionType Filter by action type
+     * @param string|null $filterActionId Filter by action ID (UUID) - the training course, maintenance plan, etc.
+     * @param string|null $filterActionType Filter by action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
      * @param string|null $filterActionCode Filter by action code
      * @param string|null $filterActionName Filter by action name
-     * @param string|null $filterSubscriberId Filter by subscriber ID (UUID)
-     * @param string|null $filterSubscriberType Filter by subscriber type
+     * @param string|null $filterSubscriberId Filter by subscriber ID (UUID) - the person or resource that needs the action
+     * @param string|null $filterSubscriberType Filter by subscriber type - what type of resource needs the action
      * @param string|null $filterSubscriberCode Filter by subscriber code
      * @param string|null $filterSubscriberName Filter by subscriber name
      * @param string|null $filterStatus Filter by status
@@ -40,7 +42,7 @@ class ActionSubscriptionListTool
     #[
         McpTool(
             name: "list_4hse_action_subscriptions",
-            description: 'List preventive actions assigned to resources (people, equipment, materials, etc.). Use this when user asks for "actions of [person/resource name]", "expired actions", "valid actions", "new actions", or to find which actions are subscribed/assigned to specific resources. Filter by subscriber name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), status: NEW (new/pending actions), VALID (valid/active actions), EXPIRED (expired/overdue/scadute actions). Requires OAuth2 authentication.',
+            description: 'List action subscriptions (the "needs" - assignments of training courses, maintenance plans, procedures, etc. to people/resources). Action subscriptions represent requirements that must be satisfied by certificates. Use this when user asks for "actions of [person/resource name]", "expired actions", "valid actions", "new actions", or to find which actions are subscribed/assigned to specific resources. Filter by subscriber name, action name, action type (TRAINING, HEALTH, MAINTENANCE, CHECK, PER), status: NEW (new/pending actions), VALID (valid/active actions), EXPIRED (expired/overdue/scadute actions). Requires OAuth2 authentication.',
         ),
     ]
     public function listActionSubscriptions(
@@ -55,7 +57,7 @@ class ActionSubscriptionListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by action ID (UUID format)",
+                description: "Filter by action ID (UUID format) - the training course, maintenance plan, procedure, etc.",
             ),
         ]
         ?string $filterActionId = null,
@@ -63,7 +65,7 @@ class ActionSubscriptionListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by action type",
+                description: "Filter by action type: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance plans, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]
@@ -82,7 +84,7 @@ class ActionSubscriptionListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by subscriber ID (UUID format)",
+                description: "Filter by subscriber ID (UUID format) - the person, equipment, or other resource that needs the action",
             ),
         ]
         ?string $filterSubscriberId = null,
@@ -90,7 +92,7 @@ class ActionSubscriptionListTool
         #[
             Schema(
                 type: "string",
-                description: "Filter by subscriber type",
+                description: "Filter by subscriber type - what type of resource needs the action",
                 enum: [
                     "PERSON",
                     "MATERIAL_ITEM",

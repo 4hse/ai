@@ -8,16 +8,17 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE action
+ * Tool for updating an existing 4HSE action (training course, maintenance plan, procedure, etc.)
  */
 class ActionUpdateTool
 {
     /**
      * Update an existing action in 4HSE.
+     * Actions represent training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans.
      * Requires OAuth2 authentication.
      *
      * @param int $id Action ID
-     * @param string|null $actionType Action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER)
+     * @param string|null $actionType Action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
      * @param string|null $name Action name
      * @param string|null $code Action code
      * @param string|null $description Action description
@@ -35,16 +36,22 @@ class ActionUpdateTool
     #[
         McpTool(
             name: "update_4hse_action",
-            description: "Updates an existing action in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing action in 4HSE (training course, maintenance plan, procedure, individual protection plan, or health surveillance plan). Use this to modify existing training courses and other actions. Requires OAuth2 authentication.",
         ),
     ]
     public function updateAction(
-        #[Schema(type: "integer", description: "Action ID (required)")] int $id,
+        #[
+            Schema(
+                type: "integer",
+                description: "Action ID (required) - the ID of the training course, maintenance plan, procedure, etc. to update",
+            ),
+        ]
+        int $id,
 
         #[
             Schema(
                 type: "string",
-                description: "Action type",
+                description: "Action type: TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance plans, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]

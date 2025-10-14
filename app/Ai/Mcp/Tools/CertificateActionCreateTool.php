@@ -14,31 +14,36 @@ class CertificateActionCreateTool
 {
     /**
      * Create a new certificate action in 4HSE.
+     * Certificate-action associations link a certificate to a specific action, establishing which action requirement the certificate satisfies.
+     * This completes the workflow: Action → Action-Subscription (need) → Certificate → Certificate-Action (resolution).
      * Requires OAuth2 authentication.
      *
-     * @param string $certificateId Certificate ID (UUID)
-     * @param int $actionId Action ID
+     * @param string $certificateId Certificate ID (UUID) - the certificate that satisfies the requirement
+     * @param int $actionId Action ID - the specific action (training course, maintenance plan, etc.) that this certificate covers
      * @param string $tenantId Tenant ID (UUID)
-     * @param string|null $dateExpire Expiration date (format: YYYY-MM-DD)
+     * @param string|null $dateExpire Expiration date (format: YYYY-MM-DD) - when this certificate-action coverage expires
      * @return array Created certificate action details
      */
     #[
         McpTool(
             name: "create_4hse_certificate_action",
-            description: "Creates a new certificate-action association in 4HSE. Links a certificate to an action. Requires OAuth2 authentication.",
+            description: "Creates a new certificate-action association in 4HSE. This links a certificate to a specific action, establishing which action requirement the certificate satisfies. Use this to complete the workflow after creating certificates - it specifies exactly which training course, maintenance plan, etc. the certificate covers. Requires OAuth2 authentication.",
         ),
     ]
     public function createCertificateAction(
         #[
             Schema(
                 type: "string",
-                description: "Certificate ID in UUID format (required)",
+                description: "Certificate ID in UUID format (required) - the certificate that satisfies an action requirement",
             ),
         ]
         string $certificateId,
 
         #[
-            Schema(type: "integer", description: "Action ID (required)"),
+            Schema(
+                type: "integer",
+                description: "Action ID (required) - the specific action (training course, maintenance plan, procedure, etc.) that this certificate covers",
+            ),
         ]
         int $actionId,
 
@@ -53,7 +58,7 @@ class CertificateActionCreateTool
         #[
             Schema(
                 type: "string",
-                description: "Expiration date in YYYY-MM-DD format",
+                description: "Expiration date in YYYY-MM-DD format - when this certificate-action coverage expires (may differ from certificate expiration)",
             ),
         ]
         ?string $dateExpire = null,

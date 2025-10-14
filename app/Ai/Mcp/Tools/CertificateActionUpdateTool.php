@@ -8,12 +8,14 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE certificate action
+ * Tool for updating an existing 4HSE certificate action (a "link" - association between certificate and specific action)
  */
 class CertificateActionUpdateTool
 {
     /**
      * Update an existing certificate action in 4HSE.
+     * Certificate-action associations link certificates to specific actions, establishing which action requirement the certificate satisfies.
+     * This completes the workflow: Action → Action-Subscription (need) → Certificate → Certificate-Action (resolution).
      * Requires OAuth2 authentication.
      *
      * @param string $id Certificate action ID (UUID)
@@ -26,14 +28,14 @@ class CertificateActionUpdateTool
     #[
         McpTool(
             name: "update_4hse_certificate_action",
-            description: "Updates an existing certificate-action association in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing certificate-action association in 4HSE (a 'link' that specifies which action requirement a certificate satisfies). Certificate-action associations complete the workflow by linking certificates to specific training courses, maintenance plans, procedures, etc. Use this to modify existing certificate-action links or update their expiration dates. Requires OAuth2 authentication.",
         ),
     ]
     public function updateCertificateAction(
         #[
             Schema(
                 type: "string",
-                description: "Certificate action ID in UUID format (required)",
+                description: "Certificate action ID (UUID format, required) - the ID of the specific link between certificate and action to update",
             ),
         ]
         string $id,
@@ -54,7 +56,7 @@ class CertificateActionUpdateTool
         #[
             Schema(
                 type: "string",
-                description: "Expiration date in YYYY-MM-DD format",
+                description: "Expiration date in YYYY-MM-DD format - when this certificate-action coverage expires (may differ from certificate expiration)",
             ),
         ]
         ?string $dateExpire = null,

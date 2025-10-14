@@ -8,22 +8,24 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for deleting a 4HSE certificate
+ * Tool for deleting a 4HSE certificate (a "resolution" - proof that a requirement has been satisfied)
  */
 class CertificateDeleteTool
 {
     /**
      * Delete a certificate from 4HSE.
+     * Certificates "resolve" action subscription needs by proving that requirements have been satisfied.
+     * WARNING: This will permanently remove the certificate and may affect requirement compliance.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Certificate ID (UUID)
+     * @param string $id Certificate ID (UUID) - the specific certificate to delete
      * @param bool $force Force deletion of the entity and all related entities.
      * @return array Deletion result
      */
     #[
         McpTool(
             name: "delete_4hse_certificate",
-            description: "Deletes a certificate in 4HSE. Requires OAuth2 authentication.",
+            description: "Deletes a certificate in 4HSE. Certificates 'resolve' action subscription needs by proving that requirements have been satisfied (e.g., training completed, maintenance performed). WARNING: This permanently removes the certificate and may affect requirement compliance. Use with caution. Requires OAuth2 authentication.",
         ),
     ]
     public function deleteCertificate(

@@ -8,29 +8,31 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for deleting a 4HSE action subscription
+ * Tool for deleting a 4HSE action subscription (a "need" - assignment of requirement to person/resource)
  */
 class ActionSubscriptionDeleteTool
 {
     /**
      * Delete an action subscription from 4HSE.
+     * Action subscriptions represent the "need" - they link a person or resource to an action requirement.
+     * WARNING: This will permanently remove the requirement assignment.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Action subscription ID (UUID)
+     * @param string $id Action subscription ID (UUID) - the specific need/assignment to delete
      * @param bool $force Force deletion of the entity and all related entities.
      * @return array Deletion result
      */
     #[
         McpTool(
             name: "delete_4hse_action_subscription",
-            description: "Deletes an action subscription in 4HSE. Requires OAuth2 authentication.",
+            description: "Deletes an action subscription in 4HSE. Action subscriptions represent the 'need' - the assignment of a training course, maintenance plan, procedure, etc. to a person or resource. WARNING: This permanently removes the requirement assignment. Use with caution. Requires OAuth2 authentication.",
         ),
     ]
     public function deleteActionSubscription(
         #[
             Schema(
                 type: "string",
-                description: "Action subscription ID (UUID format)",
+                description: "Action subscription ID (UUID format) - the ID of the specific need/assignment to delete",
             ),
         ]
         string $id,

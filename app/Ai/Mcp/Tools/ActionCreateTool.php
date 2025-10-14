@@ -14,9 +14,11 @@ class ActionCreateTool
 {
     /**
      * Create a new action in 4HSE.
+     * Actions represent training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans.
+     * They define requirements that can later be assigned to people or material resources via action-subscriptions.
      * Requires OAuth2 authentication.
      *
-     * @param string $actionType Action type (TRAINING, MAINTENANCE, HEALTH, CHECK, PER)
+     * @param string $actionType Action type (TRAINING=training courses, MAINTENANCE=maintenance plans, HEALTH=health surveillance, CHECK=procedures, PER=individual protection plans)
      * @param string $name Action name
      * @param string $subtenantId Subtenant ID (UUID)
      * @param string $tenantId Tenant ID (UUID)
@@ -34,14 +36,14 @@ class ActionCreateTool
     #[
         McpTool(
             name: "create_4hse_action",
-            description: "Creates a new action in 4HSE. Requires OAuth2 authentication.",
+            description: "Creates a new action in 4HSE (training courses, maintenance plans, procedures, individual protection plans, or health surveillance plans). Actions define requirements that can be assigned to people or material resources. Use this tool to add new training courses to a project. Requires OAuth2 authentication.",
         ),
     ]
     public function createAction(
         #[
             Schema(
                 type: "string",
-                description: "Action type (required)",
+                description: "Action type (required): TRAINING for training courses, MAINTENANCE for maintenance plans, HEALTH for health surveillance plans, CHECK for procedures, PER for individual protection plans",
                 enum: ["TRAINING", "MAINTENANCE", "HEALTH", "CHECK", "PER"],
             ),
         ]

@@ -8,21 +8,23 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for viewing a single 4HSE certificate
+ * Tool for viewing a single 4HSE certificate (a "resolution" - proof that a requirement has been satisfied)
  */
 class CertificateViewTool
 {
     /**
      * Get a single certificate by ID.
+     * Certificates "resolve" action subscription needs by proving that requirements have been satisfied.
+     * They establish the coverage period for specific action types for people or resources.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Certificate ID (UUID)
+     * @param string $id Certificate ID (UUID) - the specific certificate to retrieve
      * @return array Certificate details
      */
     #[
         McpTool(
             name: "view_4hse_certificate",
-            description: "Retrieves a single 4HSE certificate by ID. View complete certificate details including dates, validity, notes. Requires OAuth2 authentication.",
+            description: "Retrieves a single 4HSE certificate by ID. Certificates 'resolve' action subscription needs by proving that requirements have been satisfied (e.g., training completed, maintenance performed). View complete certificate details including dates, validity, notes, and which requirements it satisfies. Requires OAuth2 authentication.",
         ),
     ]
     public function viewCertificate(

@@ -8,18 +8,20 @@ use PhpMcp\Server\Attributes\Schema;
 use Throwable;
 
 /**
- * Tool for updating an existing 4HSE action subscription
+ * Tool for updating an existing 4HSE action subscription (a "need" - assignment of requirement to person/resource)
  */
 class ActionSubscriptionUpdateTool
 {
     /**
      * Update an existing action subscription in 4HSE.
+     * Action subscriptions represent the "need" - they link a person or resource to an action requirement.
+     * They create requirements that must later be satisfied by certificates.
      * Requires OAuth2 authentication.
      *
-     * @param string $id Action subscription ID (UUID)
-     * @param string|null $actionId Action ID (UUID)
-     * @param string|null $subscriberId Subscriber ID (UUID)
-     * @param string|null $subscriberType Subscriber type
+     * @param string $id Action subscription ID (UUID) - the specific need/assignment to update
+     * @param string|null $actionId Action ID (UUID) - the training course, maintenance plan, procedure, etc.
+     * @param string|null $subscriberId Subscriber ID (UUID) - the person or resource that needs the action
+     * @param string|null $subscriberType Subscriber type - what type of resource needs the action
      * @param string|null $subtenantId Subtenant ID (UUID)
      * @param string|null $tenantId Tenant ID (UUID)
      * @param array|null $data Additional data (JSON object)
@@ -28,14 +30,14 @@ class ActionSubscriptionUpdateTool
     #[
         McpTool(
             name: "update_4hse_action_subscription",
-            description: "Updates an existing action subscription in 4HSE. Requires OAuth2 authentication.",
+            description: "Updates an existing action subscription in 4HSE. Action subscriptions represent the 'need' - the assignment of a training course, maintenance plan, procedure, etc. to a person or resource. Use this to modify existing requirement assignments. Requires OAuth2 authentication.",
         ),
     ]
     public function updateActionSubscription(
         #[
             Schema(
                 type: "string",
-                description: "Action subscription ID in UUID format (required)",
+                description: "Action subscription ID (UUID format, required) - the ID of the specific need/assignment to update",
             ),
         ]
         string $id,
@@ -53,7 +55,7 @@ class ActionSubscriptionUpdateTool
         #[
             Schema(
                 type: "string",
-                description: "Subscriber type",
+                description: "Subscriber type - what type of resource needs the action",
                 enum: [
                     "PERSON",
                     "MATERIAL_ITEM",
