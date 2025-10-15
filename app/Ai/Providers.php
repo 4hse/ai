@@ -10,6 +10,8 @@ use NeuronAI\Providers\Gemini\Gemini;
 use NeuronAI\Providers\Anthropic\Anthropic;
 use NeuronAI\Providers\HttpClientOptions;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
+
 class Providers
 {
     /**
@@ -22,8 +24,10 @@ class Providers
                 "anthropic.claude-3-sonnet-20240229-v1:0",
             ),
             "gemini-2.5-flash" => self::getGeminiProvider($modelId),
-            "anthropic.claude-3-sonnet-20240229-v1:0"
-                => self::getClaudeProvider($modelId),
+            // Claude API models
+            "claude-3-7-sonnet-20250219" => self::getClaudeProvider($modelId),
+            "claude-3-5-haiku-20241022" => self::getClaudeProvider($modelId),
+            "claude-sonnet-4-5-20250929" => self::getClaudeProvider($modelId),
             default => throw new Exception("Model not found: $modelId"),
         };
     }
@@ -31,6 +35,9 @@ class Providers
     protected static function getClaudeProvider(
         string $modelId,
     ): AIProviderInterface {
+
+        Log::debug('claude key ' . Config::get("ai.providers.claude.key"));
+
         return new Anthropic(
             key: Config::get("ai.providers.claude.key"),
             model: $modelId,

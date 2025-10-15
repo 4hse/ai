@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatHistoryController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\AdvisorChatController;
+
+// Public API routes (no authentication required)
+Route::post('/advisor/chat/stream', [AdvisorChatController::class, 'stream']);
 
 // Protected API routes requiring Keycloak OAuth2 authentication
 Route::middleware('keycloak.auth')->group(function () {

@@ -21,7 +21,7 @@ class RouterAgent extends Agent
      */
     protected function provider(): AIProviderInterface
     {
-        return Providers::getProvider("gemini-2.5-flash");
+        return Providers::getProvider("claude-3-7-sonnet-20250219");
     }
 
     public function instructions(): string
