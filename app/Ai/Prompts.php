@@ -76,7 +76,7 @@ class Prompts
     public const CHOOSE_AGENT_INSTRUCTIONS = <<<'EOT'
       <Task>
         Data la query dell'utente, devi scegliere quale agente deve rispondere:
-        - advisor: Per domande commerciali, prezzi, piani, casi d'uso di 4hse
+        - advisor: Per domande commerciali, prezzi, piani, informazioni generali su 4hse
         - guide: Per domande tecniche, funzionalità, tutorial, come usare 4hse, manuali, troubleshooting
         - consultant: Per domande su normative, leggi, compliance
         - assistant: Per estrazione dati o esecuzione di operazioni (tools) su 4hse

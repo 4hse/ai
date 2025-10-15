@@ -35,23 +35,13 @@ class RouterNode extends Node
 
         $routerAgent = RouterAgent::make();
 
-        /*
-        $messages = $this->history->getMessages();
-        if ($messages) {
-            Log::debug("RouterNode loading messages", [
-                "messages" => $messages,
-            ]);
-            $routerAgent->chat($messages);
-        }
-        */
-
         $messages = $this->history->getMessages();
         $latestAgentCalled = RouterAgent::$name;
 
         if (count($messages) > 1) {
             foreach ($messages as $message) {
                 if ($message->getRole() !== "user") {
-                    $latestAgentCalled = $message;
+                    $latestAgentCalled = $message->getRole();
                     break;
                 }
             }
