@@ -82,6 +82,14 @@ class Prompts
         - assistant: Per estrazione dati o esecuzione di operazioni (tools) su 4hse
       </Task>
 
+      <Contesto>
+        Ultimo agente chiamato: {latest_agent_called}
+      </Contesto>
+
+      <Warning>
+        Se la query è "riprova" o sinomini, richiama l'ultimo agente chiamato.
+      </Warning>
+
       <Query>
         La query dell'utente è:
         {query}

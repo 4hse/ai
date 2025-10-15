@@ -45,11 +45,22 @@ class RouterNode extends Node
         }
         */
 
+        $messages = $this->history->getMessages();
+        if (count($messages) > 1) {
+            $latestAgentCalled = RouterAgent::$name;
+            foreach ($messages as $message) {
+                if ($message->getRole() !== "user") {
+                    $latestAgentCalled = $message;
+                    break;
+                }
+            }
+        }
+
         $selectedAgent = $routerAgent->structured(
             new UserMessage(
                 str_replace(
-                    "{query}",
-                    $state->get("query"),
+                    ["{query}", "{latest_agent_called}"],
+                    [$state->get("query"), $latestAgentCalled],
                     Prompts::CHOOSE_AGENT_INSTRUCTIONS,
                 ),
             ),
