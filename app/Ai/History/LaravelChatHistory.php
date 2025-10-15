@@ -17,7 +17,7 @@ class LaravelChatHistory extends AbstractChatHistory
 
     public function __construct(
         protected string $thread_id,
-        protected int $user_id,
+        protected string $user_id,
         int $contextWindow = 50000
     ) {
         parent::__construct($contextWindow);

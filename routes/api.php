@@ -6,7 +6,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AdvisorChatController;
 
 // Public API routes (no authentication required)
-Route::post('/advisor/chat/stream', [AdvisorChatController::class, 'stream']);
+// Rate limit: 5 requests per minute per IP
+Route::middleware('throttle:5,1')->post('/advisor/chat/stream', [AdvisorChatController::class, 'stream']);
 
 // Protected API routes requiring Keycloak OAuth2 authentication
 Route::middleware('keycloak.auth')->group(function () {
