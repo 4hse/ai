@@ -46,8 +46,9 @@ class RouterNode extends Node
         */
 
         $messages = $this->history->getMessages();
+        $latestAgentCalled = RouterAgent::$name;
+
         if (count($messages) > 1) {
-            $latestAgentCalled = RouterAgent::$name;
             foreach ($messages as $message) {
                 if ($message->getRole() !== "user") {
                     $latestAgentCalled = $message;
