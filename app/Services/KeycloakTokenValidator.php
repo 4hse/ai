@@ -13,6 +13,21 @@ use Exception;
 class KeycloakTokenValidator
 {
     /**
+     * Cache TTL for invalid tokens (in seconds)
+     */
+    private const CACHE_TTL_INVALID_TOKEN = 300; // 5 minutes
+
+    /**
+     * Cache TTL for valid tokens (in seconds)
+     */
+    private const CACHE_TTL_VALID_TOKEN_MAX = 300; // 5 minutes
+
+    /**
+     * Default cache TTL when token expiration is not available (in seconds)
+     */
+    private const CACHE_TTL_DEFAULT = 60; // 1 minute
+
+    /**
      * Validate an access token with Keycloak introspection endpoint
      *
      * @param string $token The access token to validate
@@ -28,7 +43,7 @@ class KeycloakTokenValidator
             'cache_key' => substr($cacheKey, 0, 32) . '...'
         ]);
 
-        // Check cache first (tokens are short-lived, cache for 1 minute)
+        // Check cache first (valid tokens cached until exp, invalid tokens for 5 minutes)
         $cached = Cache::get($cacheKey);
         if ($cached !== null) {
             if ($cached === false) {
@@ -55,7 +70,7 @@ class KeycloakTokenValidator
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                Cache::put($cacheKey, false, 60); // Cache failure for 1 minute
+                Cache::put($cacheKey, false, self::CACHE_TTL_INVALID_TOKEN);
                 throw new Exception('Token introspection failed: ' . $response->body());
             }
 
@@ -66,7 +81,7 @@ class KeycloakTokenValidator
                 Log::warning('Token is not active', [
                     'username' => $data['preferred_username'] ?? 'unknown'
                 ]);
-                Cache::put($cacheKey, false, 60);
+                Cache::put($cacheKey, false, self::CACHE_TTL_INVALID_TOKEN);
                 throw new Exception('Token is not active or has expired');
             }
 
@@ -83,13 +98,13 @@ class KeycloakTokenValidator
                     'client_id' => $clientId,
                     'allowed_clients' => $allowedClients
                 ]);
-                Cache::put($cacheKey, false, 60);
+                Cache::put($cacheKey, false, self::CACHE_TTL_INVALID_TOKEN);
                 throw new Exception('Token audience mismatch: ' . $clientId);
             }
 
-            // Cache valid token data (cache until expiration, max 5 minutes)
+            // Cache valid token data (cache until expiration, with max limit)
             $exp = $data['exp'] ?? null;
-            $ttl = $exp ? min($exp - time(), 300) : 60;
+            $ttl = $exp ? min($exp - time(), self::CACHE_TTL_VALID_TOKEN_MAX) : self::CACHE_TTL_DEFAULT;
             if ($ttl > 0) {
                 Cache::put($cacheKey, $data, $ttl);
             }
@@ -106,7 +121,7 @@ class KeycloakTokenValidator
             Log::error('Token validation exception', [
                 'error' => $e->getMessage()
             ]);
-            Cache::put($cacheKey, false, 60);
+            Cache::put($cacheKey, false, self::CACHE_TTL_INVALID_TOKEN);
             throw $e;
         }
     }

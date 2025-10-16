@@ -11,13 +11,15 @@ use App\Http\Controllers\AuthorizedUserController;
 Route::middleware('throttle:5,1')->post('/advisor/chat/stream', [AdvisorChatController::class, 'stream']);
 
 // Protected API routes requiring Keycloak OAuth2 authentication
-Route::middleware('keycloak.auth')->group(function () {
+// Rate limit: 60 requests per minute per authenticated user
+Route::middleware(['throttle:60,1', 'keycloak.auth'])->group(function () {
     // Check user authorization for AI features (no authorization required to check)
     Route::get('/user/check-authorization', [AuthorizedUserController::class, 'checkAuthorization']);
 });
 
 // Protected API routes requiring both authentication and authorization
-Route::middleware(['keycloak.auth', 'authorized.user'])->group(function () {
+// Rate limit: 60 requests per minute per authenticated user
+Route::middleware(['throttle:60,1', 'keycloak.auth', 'authorized.user'])->group(function () {
     // Chat history endpoints
     Route::get('/chat-history', [ChatHistoryController::class, 'index']);
     Route::get('/chat-history/index', [ChatHistoryController::class, 'index']);
