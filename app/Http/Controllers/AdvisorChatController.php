@@ -30,20 +30,17 @@ class AdvisorChatController extends Controller
         $dailyKey = 'advisor_daily_limit:' . $userIp;
         $dailyCount = Cache::get($dailyKey, 0);
 
-        if ($dailyCount >= self::DAILY_LIMIT) {
-            return response()->json([
-                'error' => 'Daily message limit reached. Please try again tomorrow.',
-                'limit' => self::DAILY_LIMIT,
-                'reset_at' => now()->endOfDay()->toIso8601String()
-            ], 429);
-        }
-
         // Get or generate thread_id
         $thread_id = $request->input('thread_id') ?? \Illuminate\Support\Str::uuid()->toString();
 
+        if ($dailyCount >= self::DAILY_LIMIT) {
+            return new StreamedResponse(function () use ($thread_id) {
+               $this->sendMessage('Daily limit reached', 'error', $thread_id) ;
+            });
+        }
+
         // Validate message input
         $messages = $request->input('messages', []);
-
         if (empty($messages)) {
             return response()->json([
                 'error' => 'messages array is required and cannot be empty'
