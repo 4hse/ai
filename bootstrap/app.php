@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'mcp.auth' => \App\Http\Middleware\ValidateMcpToken::class,
             'keycloak.auth' => \App\Http\Middleware\AuthenticateWithKeycloak::class,
+            'authorized.user' => \App\Http\Middleware\CheckAuthorizedUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

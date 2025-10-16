@@ -52,25 +52,15 @@ class ChatController extends Controller
                     'error' => 'Access denied to this thread'
                 ], 403);
             }
-        } else {
-            // Create new thread for this user
-            $chatHistory = ChatHistory::create([
-                'thread_id' => $thread_id,
-                'user_id' => $user_id,
-                'messages' => []
-            ]);
         }
+        // Note: If thread doesn't exist, it will be created by LaravelChatHistory
 
         // Get bearer token from request attributes (set by middleware)
         $bearerToken = $request->attributes->get('bearer_token');
 
         // Set the appropriate headers for SSE
-        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id, $chatHistory, $bearerToken) {
+        $response = new StreamedResponse(function () use ($message, $thread_id, $user_id, $bearerToken) {
             try {
-                if (!$chatHistory) {
-                    throw new Exception("Unable to retrieve/create thread");
-                }
-
                 $workflow = new RouterWorkflow($message, $thread_id, $user_id, $bearerToken);
                 $handler = $workflow->start();
 

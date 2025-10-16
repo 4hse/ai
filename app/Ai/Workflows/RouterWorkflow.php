@@ -35,7 +35,7 @@ class RouterWorkflow extends Workflow
 
         $this->history = new LaravelChatHistory(
             thread_id: $thread_id,
-            user_id: (int) $user_id,
+            user_id: $user_id,
             contextWindow: 50000
         );
 
