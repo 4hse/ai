@@ -2,8 +2,8 @@
 
 namespace App\Ai\Mcp\Tools;
 
-use App\Services\FourHseApiClient;
 use App\Ai\Mcp\Tools\Utils\WorkGroupTypeMapper;
+use App\Services\FourHseApiClient;
 use PhpMcp\Server\Attributes\McpTool;
 use PhpMcp\Server\Attributes\Schema;
 use Throwable;
